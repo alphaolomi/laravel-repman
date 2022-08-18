@@ -3,10 +3,11 @@
 namespace AlphaOlomi\Repman\Tests;
 
 use AlphaOlomi\Repman\RepmanServiceProvider;
-use Orchestra\Testbench\TestCase as Orchestra;
 
-class TestCase extends Orchestra
+class TestCase extends \Orchestra\Testbench\TestCase
 {
+    protected $loadEnvironmentVariables = true;
+
     protected function setUp(): void
     {
         parent::setUp();

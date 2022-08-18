@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AlphaOlomi\Repman;
 
 use Spatie\LaravelPackageTools\Package;
@@ -17,5 +19,16 @@ class RepmanServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-repman')
             ->hasConfigFile();
+    }
+
+    public function bootingPackage()
+    {
+        $this->app->singleton(
+            abstract: RepamnService::class,
+            concrete: fn () => new RepmanService(
+                baseUrl: strval(config('repman.url')),
+                apiToken: strval(config('repman.token')),
+            ),
+        );
     }
 }
