@@ -33,7 +33,7 @@ class OrganizationResource
     /**
      * Create a new organization.
      *
-     * @param string $name
+     * @param  string  $name
      * @return Response
      */
     public function addOrganisation(string $name): Response
