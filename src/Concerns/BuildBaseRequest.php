@@ -11,27 +11,13 @@ trait BuildBaseRequest
 {
     public function buildRequestWithToken(): PendingRequest
     {
-        return $this->withBaseUrl()->timeout(
-            seconds: 15,
-        )->withToken(
+        return $this->withBaseUrl()->timeout(seconds: 15)->withToken(
             token: $this->apiToken,
-        );
-    }
-
-    public function buildRequestWithDigestAuth(): PendingRequest
-    {
-        return $this->withBaseUrl()->timeout(
-            seconds: 15,
-        )->withDigestAuth(
-            username: $this->username,
-            password: $this->password,
         );
     }
 
     public function withBaseUrl(): PendingRequest
     {
-        return Http::baseUrl(
-            url: $this->baseUrl,
-        );
+        return Http::baseUrl(url: $this->baseUrl);
     }
 }

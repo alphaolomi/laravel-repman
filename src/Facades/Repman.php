@@ -2,6 +2,7 @@
 
 namespace AlphaOlomi\Repman\Facades;
 
+use AlphaOlomi\Repman\RepmanService;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -14,6 +15,6 @@ class Repman extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \AlphaOlomi\Repman\Repman::class;
+        return RepmanService::class;
     }
 }

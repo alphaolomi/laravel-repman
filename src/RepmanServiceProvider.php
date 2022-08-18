@@ -24,7 +24,7 @@ class RepmanServiceProvider extends PackageServiceProvider
     public function bootingPackage()
     {
         $this->app->singleton(
-            abstract: RepamnService::class,
+            abstract: RepmanService::class,
             concrete: fn () => new RepmanService(
                 baseUrl: strval(config('repman.url')),
                 apiToken: strval(config('repman.token')),
