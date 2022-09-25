@@ -12,6 +12,7 @@ use AlphaOlomi\Repman\Concerns\CanSendPostRequest;
 use AlphaOlomi\Repman\Concerns\CanSendPutRequest;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use AlphaOlomi\Repman\Resources\PackageResource;
+use AlphaOlomi\Repman\Resources\TokenResource;
 
 /**
  * @property OrganizationResource $organizationResource
@@ -31,6 +32,58 @@ class RepmanService
     ) {
     }
 
+    /**
+     *  Set the base url.
+     * @param string $baseUrl
+     * @return RepmanService
+     */
+    public function setBaseUrl(string $baseUrl): self
+    {
+        if (empty(trim($baseUrl))) {
+            throw new \InvalidArgumentException('Base url cannot be empty');
+        }
+        if (filter_var($baseUrl, FILTER_VALIDATE_URL) === false) {
+            throw new \InvalidArgumentException('Base url is not valid');
+        }
+
+        return new self(
+            baseUrl: $baseUrl,
+            apiToken: $this->apiToken,
+        );
+    }
+
+    /**
+     *  Set the api token
+     * @param string $apiToken
+     * @return RepmanService
+     */
+    public function setApiToken(string $apiToken): self
+    {
+        if (empty(trim($apiToken))) {
+            throw new \InvalidArgumentException('Api token cannot be empty');
+        }
+        if (strlen($apiToken) !== 64) {
+            throw new \InvalidArgumentException('Api token must be 64 characters long');
+        }
+
+        return new self(
+            baseUrl: $this->baseUrl,
+            apiToken: $apiToken,
+        );
+    }
+
+    // get the base url
+    public function getBaseUrl(): string
+    {
+        return $this->baseUrl;
+    }
+
+    // get the api token
+    public function getApiToken(): string
+    {
+        return $this->apiToken;
+    }
+
     public function organizations(): OrganizationResource
     {
         return new OrganizationResource(
@@ -38,11 +91,19 @@ class RepmanService
         );
     }
 
-    public function packages(string $organisationName): PackageResource
+    public function packages(string $organisationAlias): PackageResource
     {
         return new PackageResource(
             service: $this,
-            organisationName: $organisationName,
+            organisationAlias: $organisationAlias,
+        );
+    }
+
+    public function tokens(string $organisationAlias): TokenResource
+    {
+        return new TokenResource(
+            service: $this,
+            organisationAlias: $organisationAlias,
         );
     }
 }

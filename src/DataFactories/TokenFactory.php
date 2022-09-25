@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class TokenFactory
 {
-    public static function new(array $attributes)
+    public static function new(array $attributes): Token
     {
         return (new static)->make(
             attributes: $attributes,

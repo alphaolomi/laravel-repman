@@ -4,6 +4,7 @@ namespace AlphaOlomi\Repman\DataObjects;
 use Illuminate\Support\Carbon;
 
 class Token {
+
     public function __construct(
         public readonly string $name,
         public readonly string $value,
@@ -16,8 +17,8 @@ class Token {
         return [
             'name' => $this->name,
             'value' => $this->value,
-            'created_at' => $this->createdAt,
-            'last_used_at' => $this->lastUsedAt,
+            'createdAt' => $this->createdAt->toDateString(),
+            'lastUsedAt' => $this->lastUsedAt->toDateString(),
         ];
     }
 }

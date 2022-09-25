@@ -4,8 +4,8 @@ namespace AlphaOlomi\Repman\Exceptions;
 
 class PackageNotFound extends \RuntimeException
 {
-    public function __construct(string $message = 'Package not found')
+    public function __construct(string $packageId)
     {
-        parent::__construct($message);
+        parent::__construct(sprintf('Package with id "%s" not found', $packageId));
     }
 }

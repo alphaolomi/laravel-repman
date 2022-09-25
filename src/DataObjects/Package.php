@@ -43,7 +43,7 @@ class Package
         public readonly Carbon $scanResultDate,
         public readonly array $lastScanResultContent,
         public readonly int $keepLastReleases,
-        public readonly bool $enabledSecurityScan,
+        public readonly bool $enableSecurityScan,
     ) {
     }
 
@@ -54,18 +54,18 @@ class Package
             'type' => $this->type,
             'url' => $this->url,
             'name' => $this->name,
-            'latest_released_version' => $this->latestReleasedVersion,
-            'latest_release_date' => $this->latestReleaseDate,
+            'latestReleasedVersion' => $this->latestReleasedVersion,
+            'latestReleaseDate' => $this->latestReleaseDate->toString(),
             'description' => $this->description,
-            'last_sync_at' => $this->lastSyncAt,
-            'last_sync_error' => $this->lastSyncError,
-            'webhook_created_at' => $this->webhookCreatedAt,
-            'is_synchronized_successfully' => $this->isSynchronizedSuccessfully,
-            'scan_result_status' => $this->scanResultStatus,
-            'scan_result_date' => $this->scanResultDate,
-            'last_scan_result_content' => $this->lastScanResultContent,
-            'keep_last_releases' => $this->keepLastReleases,
-            'enabled_security_scan' => $this->enabledSecurityScan,
+            'lastSyncAt' => $this->lastSyncAt->toString(),
+            'lastSyncError' => $this->lastSyncError,
+            'webhookCreatedAt' => $this->webhookCreatedAt->toString(),
+            'isSynchronizedSuccessfully' => $this->isSynchronizedSuccessfully,
+            'scanResultStatus' => $this->scanResultStatus,
+            'scanResultDate' => $this->scanResultDate->toString(),
+            'lastScanResultContent' => $this->lastScanResultContent,
+            'keepLastReleases' => $this->keepLastReleases,
+            'enabledSecurityScan' => $this->enableSecurityScan,
         ];
     }
 }

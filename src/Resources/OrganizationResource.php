@@ -6,13 +6,15 @@ use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
 use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
 use AlphaOlomi\Repman\DataObjects\Organisation;
 use AlphaOlomi\Repman\RepmanService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 
 /**
  * @property RepmanService $service
  */
-class OrganizationResource implements CanListResource
+class OrganizationResource
+//    implements CanListResource
 {
     public function __construct(
         private readonly RepmanService $service,
@@ -22,29 +24,26 @@ class OrganizationResource implements CanListResource
     /**
      * List all organizations.
      *
-     * @param  int  $page
-     * @return Collection|Collection<Organisation>
+     * @param int $page
+     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
-        if ($page < 1) {
-            $page = 1;
-        }
+        $page = max($page, 1);
+
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations?page={$page}",
+            url: "/organization?page={$page}",
         )->json("data");
 
-        return OrganisationFactory::collection(
-            organisations: $data,
-        );
+        return OrganisationFactory::collection(organisations: $data);
     }
 
     /**
      * Create a new organization.
      *
-     * @param  string  $name
-     * @return Response
+     * @param string $name
+     * @return Organisation
      */
     public function create(string $name): Organisation
     {
@@ -60,7 +59,7 @@ class OrganizationResource implements CanListResource
             ->onError(function (Response $response) {
                 throw new \RuntimeException($response->json());
             })
-            ->json("data");
+            ->json();
 
         return OrganisationFactory::new(
             attributes: $data,

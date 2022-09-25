@@ -8,18 +8,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected $loadEnvironmentVariables = true;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [RepmanServiceProvider::class];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        config()->set('repman.url', 'https://repman.io/api');
+        config()->set('repman.token', 'e7213497be766db41a3b8c060e6b85337759cdac77c64717816abg049ef14730');
     }
 }

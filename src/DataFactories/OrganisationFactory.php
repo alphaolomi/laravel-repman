@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class OrganisationFactory
 {
-    public static function new(array $attributes)
+    public static function new(array $attributes): Organisation
     {
         return (new static)->make(
             attributes: $attributes,

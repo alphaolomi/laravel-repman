@@ -12,8 +12,6 @@ class RepmanServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         /*
-         * This class is a Package Service Provider
-         *
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
@@ -26,8 +24,8 @@ class RepmanServiceProvider extends PackageServiceProvider
         $this->app->singleton(
             abstract: RepmanService::class,
             concrete: fn () => new RepmanService(
-                baseUrl: strval(config('repman.url')),
-                apiToken: strval(config('repman.token')),
+                baseUrl: config('repman.url'),
+                apiToken: config('repman.token'),
             ),
         );
     }

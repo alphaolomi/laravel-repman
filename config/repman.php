@@ -1,6 +1,18 @@
 <?php
 
+/**
+ * Repman Configuration
+ */
 return [
-    'url' => env('REPMAN_URL'),
+
+    /**
+     * API Base Url
+     *
+     */
+    'url' => env('REPMAN_URL', 'https://app.repman.io/api'),
+
+    /**
+     * Api Token
+     */
     'token' => env('REPMAN_TOKEN'),
 ];

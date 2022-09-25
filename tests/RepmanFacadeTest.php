@@ -3,11 +3,26 @@
 use AlphaOlomi\Repman\Facades\Repman;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
+use AlphaOlomi\Repman\Resources\PackageResource;
 
-test('Repman facade', function () {
-    Repman::shouldReceive('organisation')
+test('Repman facade organisation method', function () {
+    Repman::shouldReceive('organisations')
         ->once()
-        ->andReturn(new OrganizationResource(new RepmanService(apiToken: '123', baseUrl: 'https://repman.io/api')));
+        ->andReturn(new OrganizationResource(new RepmanService(baseUrl: 'https://repman.io/api', apiToken: '123')));
 
-    expect(Repman::get('key'))->toBe('value');
-})->skip('for now');
+    expect(Repman::organisations())->toBeInstanceOf(OrganizationResource::class);
+});
+
+
+test('Repman facade package method', function () {
+    Repman::shouldReceive('packages')
+        ->once()
+        ->andReturn(new PackageResource(
+            service: new RepmanService(baseUrl: 'https://repman.io/api', apiToken: '123'),
+            organisationAlias: 'test-org',
+        ));
+
+    expect(Repman::packages('test-org'))
+        ->toBeInstanceOf(PackageResource::class);
+});
+

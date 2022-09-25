@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AlphaOlomi\Repman\Resources;
 
 use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
@@ -18,9 +20,8 @@ class PackageResource
 {
     public function __construct(
         private readonly RepmanService $service,
-        private readonly string $organisationName,
-    ) {
-    }
+        private readonly string $organisationAlias,
+    ) {}
 
     /**
      * List all packages.
@@ -30,44 +31,43 @@ class PackageResource
      */
     public function list(int $page = 1): Collection
     {
-        if ($page < 1) {
-            $page = 1;
-        }
+       $page = ($page < 1) ? 1 : $page;
+
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/packages?page={$page}",
-        )->onError(function (Response $response) {
-            throw new \RuntimeException($response->json());
+            url: "/organizations/{$this->organisationAlias}/package?page={$page}",
+        )->onError(function (){
+//
         })->json("data");
 
-        return PackageFactory::collection(
-            packages: $data,
-        );
+        return PackageFactory::collection(packages: $data);
     }
 
     /**
      * Create a new package.
      * @param array $payload
+     * @return Package
      */
     public function add(array $payload): Package
     {
         foreach (['repository', 'type', 'keepLastReleases'] as $key) {
             if (!isset($payload[$key])) {
-                throw new \InvalidArgumentException("{$key} cannot be empty");
+                throw new \InvalidArgumentException("Missing required keys: {$key} cannot be empty");
             }
+        }
+        if(!in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear' ])) {
+            throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/package",
+            url: "/organization/{$this->organisationAlias}/package",
             payload: $payload,
         )->onError(function (Response $response) {
             throw new \RuntimeException($response->json());
-        })->json("data");
+        })->json();
 
-        return PackageFactory::new(
-            attributes: $data,
-        );
+        return PackageFactory::new(attributes: $data);
     }
 
     /**
@@ -80,7 +80,7 @@ class PackageResource
     {
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/package/{$packageId}",
+            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
@@ -89,25 +89,23 @@ class PackageResource
             } else {
                 throw new \RuntimeException($response->json());
             }
-        })->json("data");
+        })->json();
 
-        return PackageFactory::new(
-            attributes: $data,
-        );
+        return PackageFactory::new(attributes: $data);
     }
 
 
     /**
      * Remove a package.
      *
-     * @param  string  $packageId
-     * @return Response
+     * @param string $packageId
+     * @return bool
      */
     public function remove(string $packageId): bool
     {
         $this->service->delete(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/package/{$packageId}",
+            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
@@ -119,12 +117,14 @@ class PackageResource
     }
 
 
-    // Synchronize package.
+    /**
+     * Synchronize package.
+     */
     public function sync(string $packageId): bool
     {
         $this->service->put(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/package/{$packageId}",
+            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
@@ -140,11 +140,7 @@ class PackageResource
  */
     public function update(string $packageId, array $payload): Package
     {
-        // {
-        //     "url": "string",
-        //     "keepLastReleases": 0,
-        //     "enableSecurityScan": true
-        //   }
+
         foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
             if (!isset($payload[$key])) {
                 throw new \InvalidArgumentException("{$key} cannot be empty");
@@ -153,7 +149,7 @@ class PackageResource
 
         $data = $this->service->put(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationName}/package/{$packageId}",
+            url: "/organizations/{$this->organisationAlias}/package/{$packageId}",
             payload: $payload,
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
@@ -162,8 +158,6 @@ class PackageResource
             throw new \RuntimeException($response->json());
         })->json("data");
 
-        return PackageFactory::new(
-            attributes: $data,
-        );
+        return PackageFactory::new(attributes: $data);
     }
 }
