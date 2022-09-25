@@ -2,13 +2,17 @@
 
 namespace AlphaOlomi\Repman\Resources;
 
+use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
+use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
+use AlphaOlomi\Repman\DataObjects\Organisation;
 use AlphaOlomi\Repman\RepmanService;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 
 /**
  * @property RepmanService $service
  */
-class OrganizationResource
+class OrganizationResource implements CanListResource
 {
     public function __construct(
         private readonly RepmanService $service,
@@ -19,14 +23,20 @@ class OrganizationResource
      * List all organizations.
      *
      * @param  int  $page
-     * @return Response
+     * @return Collection|Collection<Organisation>
      */
-    public function list(int $page = 1): Response
+    public function list(int $page = 1): Collection
     {
-        // TODO: Handle no negative page numbers, missing page, etc.
-        return $this->service->get(
+        if ($page < 1) {
+            $page = 1;
+        }
+        $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
             url: "/organizations?page={$page}",
+        )->json("data");
+
+        return OrganisationFactory::collection(
+            organisations: $data,
         );
     }
 
@@ -36,12 +46,24 @@ class OrganizationResource
      * @param  string  $name
      * @return Response
      */
-    public function addOrganisation(string $name): Response
+    public function create(string $name): Organisation
     {
-        return $this->service->post(
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Name cannot be empty');
+        }
+
+        $data =  $this->service->post(
             request: $this->service->buildRequestWithToken(),
             url: '/organizations',
             payload: ['name' => $name],
+        )
+            ->onError(function (Response $response) {
+                throw new \RuntimeException($response->json());
+            })
+            ->json("data");
+
+        return OrganisationFactory::new(
+            attributes: $data,
         );
     }
 }

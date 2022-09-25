@@ -1,12 +1,13 @@
 <?php
 
 use AlphaOlomi\Repman\Facades\Repman;
+use AlphaOlomi\Repman\RepmanService;
+use AlphaOlomi\Repman\Resources\OrganizationResource;
 
 test('Repman facade', function () {
-    Repman::shouldReceive('get')
+    Repman::shouldReceive('organisation')
         ->once()
-        ->with('key')
-        ->andReturn('value');
+        ->andReturn(new OrganizationResource(new RepmanService(apiToken: '123', baseUrl: 'https://repman.io/api')));
 
     expect(Repman::get('key'))->toBe('value');
 })->skip('for now');

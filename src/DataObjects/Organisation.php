@@ -26,7 +26,7 @@ class Organisation
             'id' => $this->id,
             'name' => $this->name,
             'alias' => $this->alias,
-            'has_anonymous_access' => $this->hasAnonymousAccess,
+            'hasAnonymousAccess' => $this->hasAnonymousAccess,
         ];
     }
 }

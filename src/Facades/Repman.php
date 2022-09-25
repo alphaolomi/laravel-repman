@@ -3,13 +3,15 @@
 namespace AlphaOlomi\Repman\Facades;
 
 use AlphaOlomi\Repman\RepmanService;
+use AlphaOlomi\Repman\RepmanService\Resources\OrganiastionResource;
+use AlphaOlomi\Repman\RepmanService\Resources\PackageResource;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static Response list(int $page = 1)
- * @method static Response addOrganisation(string $name)
+ * @method static OrganiastionResource organisation()
+ * @method static PackageResource packages(string $organisationName)
  *
- * @see \AlphaOlomi\Repman\Repman
+ * @see \AlphaOlomi\Repman\RepmanService
  */
 class Repman extends Facade
 {
