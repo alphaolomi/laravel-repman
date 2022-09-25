@@ -6,7 +6,7 @@ use AlphaOlomi\Repman\DataObjects\Package;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class PackageFactory
+final class PackageFactory
 {
     public static function new(array $attributes): Package
     {

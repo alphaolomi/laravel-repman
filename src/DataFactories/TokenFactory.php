@@ -1,12 +1,13 @@
 <?php
 
+
 namespace AlphaOlomi\Repman\DataFactories;
 
 use AlphaOlomi\Repman\DataObjects\Token;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class TokenFactory
+final class TokenFactory
 {
     public static function new(array $attributes): Token
     {
