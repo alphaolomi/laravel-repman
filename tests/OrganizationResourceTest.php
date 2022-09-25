@@ -30,9 +30,9 @@ it('can create org', function () {
         'app.repman.io/api/organization*' => Http::response(getFixture('create-org.json'), 201),
     ]);
 
-    $organisation =$this->organizationResource
-        ->create("mumbo");
+    $organisation = $this->organizationResource
+        ->create('mumbo');
 
     expect($organisation)->toBeInstanceOf(Organisation::class)
-        ->and($organisation->name)->toBe("mumbo");
+        ->and($organisation->name)->toBe('mumbo');
 });
