@@ -5,7 +5,7 @@ namespace AlphaOlomi\Repman\DataFactories;
 use AlphaOlomi\Repman\DataObjects\Organization;
 use Illuminate\Support\Collection;
 
- class OrganisationFactory
+final class OrganizationFactory
 {
     public static function new(array $attributes): Organization
     {
