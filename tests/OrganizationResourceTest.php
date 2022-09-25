@@ -1,7 +1,6 @@
 <?php
 
 use AlphaOlomi\Repman\DataObjects\Organization;
-use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use Illuminate\Support\Facades\Http;

@@ -76,6 +76,7 @@ class RepmanService
 
     /**
      * Get the Base URL
+     *
      * @return string
      */
     public function getBaseUrl(): string
@@ -85,6 +86,7 @@ class RepmanService
 
     /**
      * Get the current API Token
+     *
      * @return string
      */
     public function getApiToken(): string
