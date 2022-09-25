@@ -3,9 +3,10 @@
 namespace AlphaOlomi\Repman\Resources;
 
 use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
-use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
+use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
 use AlphaOlomi\Repman\DataObjects\Organization;
 use AlphaOlomi\Repman\RepmanService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 
@@ -34,14 +35,15 @@ class OrganizationResource implements CanListResource
             url: "/organization?page={$page}",
         )->json('data');
 
-        return OrganizationFactory::collection(organizations: $data);
+        return OrganisationFactory::collection(organizations: $data);
     }
 
     /**
      * Create a new organization.
      *
-     * @param  string  $name
+     * @param string $name
      * @return Organization
+     * @throws RequestException
      */
     public function create(string $name): Organization
     {
@@ -51,16 +53,17 @@ class OrganizationResource implements CanListResource
 
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
-            url: '/organizations',
+            url: '/organization',
             payload: ['name' => $name],
         )
             ->onError(function (Response $response) {
-                throw new $response->toException();
+                if ($response->status() === 400 && str_contains($response->json('errors.message'),'already exists') ) {
+                    throw new \InvalidArgumentException('Organization already exists');
+                }
+                throw new RequestException($response);
             })
             ->json();
 
-        return OrganizationFactory::new(
-            attributes: $data,
-        );
+        return OrganisationFactory::new(attributes: $data);
     }
 }
