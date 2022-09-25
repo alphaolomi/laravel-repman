@@ -13,7 +13,6 @@ test('Repman facade organisation method', function () {
     expect(Repman::organisations())->toBeInstanceOf(OrganizationResource::class);
 });
 
-
 test('Repman facade package method', function () {
     Repman::shouldReceive('packages')
         ->once()
@@ -25,4 +24,3 @@ test('Repman facade package method', function () {
     expect(Repman::packages('test-org'))
         ->toBeInstanceOf(PackageResource::class);
 });
-

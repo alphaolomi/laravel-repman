@@ -7,7 +7,6 @@ return [
 
     /**
      * API Base Url
-     *
      */
     'url' => env('REPMAN_URL', 'https://app.repman.io/api'),
 

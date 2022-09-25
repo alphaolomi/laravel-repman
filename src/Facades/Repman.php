@@ -9,10 +9,9 @@ use AlphaOlomi\Repman\Resources\TokenResource;
 use Illuminate\Support\Facades\Facade;
 
 /**
- *
  * @method static OrganizationResource organisations()
  * @method static PackageResource packages(string $organisationAlias)
-  * @method static TokenResource tokens(string $organisationAlias)
+ * @method static TokenResource tokens(string $organisationAlias)
  *  @method static setBaseUrl(string $url)
  *  @method static setApiToken(string $token)
  *
@@ -20,7 +19,6 @@ use Illuminate\Support\Facades\Facade;
  */
 class Repman extends Facade
 {
-
     protected static function getFacadeAccessor(): string
     {
         return RepmanService::class;

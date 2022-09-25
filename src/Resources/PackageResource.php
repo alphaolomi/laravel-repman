@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace AlphaOlomi\Repman\Resources;
 
-use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
 use AlphaOlomi\Repman\DataFactories\PackageFactory;
-use AlphaOlomi\Repman\DataObjects\Organisation;
 use AlphaOlomi\Repman\DataObjects\Package;
 use AlphaOlomi\Repman\Exceptions\PackageNotFound;
 use AlphaOlomi\Repman\RepmanService;
@@ -21,7 +19,8 @@ class PackageResource
     public function __construct(
         private readonly RepmanService $service,
         private readonly string $organisationAlias,
-    ) {}
+    ) {
+    }
 
     /**
      * List all packages.
@@ -31,31 +30,32 @@ class PackageResource
      */
     public function list(int $page = 1): Collection
     {
-       $page = ($page < 1) ? 1 : $page;
+        $page = ($page < 1) ? 1 : $page;
 
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
             url: "/organizations/{$this->organisationAlias}/package?page={$page}",
-        )->onError(function (){
+        )->onError(function () {
 //
-        })->json("data");
+        })->json('data');
 
         return PackageFactory::collection(packages: $data);
     }
 
     /**
      * Create a new package.
-     * @param array $payload
+     *
+     * @param  array  $payload
      * @return Package
      */
     public function add(array $payload): Package
     {
         foreach (['repository', 'type', 'keepLastReleases'] as $key) {
-            if (!isset($payload[$key])) {
+            if (! isset($payload[$key])) {
                 throw new \InvalidArgumentException("Missing required keys: {$key} cannot be empty");
             }
         }
-        if(!in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear' ])) {
+        if (! in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
             throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
@@ -84,7 +84,7 @@ class PackageResource
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
-            } else if ($response->status() === 403) {
+            } elseif ($response->status() === 403) {
                 throw new \RuntimeException("You don't have permission to access this package");
             } else {
                 throw new \RuntimeException($response->json());
@@ -94,11 +94,10 @@ class PackageResource
         return PackageFactory::new(attributes: $data);
     }
 
-
     /**
      * Remove a package.
      *
-     * @param string $packageId
+     * @param  string  $packageId
      * @return bool
      */
     public function remove(string $packageId): bool
@@ -115,7 +114,6 @@ class PackageResource
 
         return true;
     }
-
 
     /**
      * Synchronize package.
@@ -135,14 +133,13 @@ class PackageResource
         return true;
     }
 
-/**
- * Update and synchronize a package.
- */
+    /**
+     * Update and synchronize a package.
+     */
     public function update(string $packageId, array $payload): Package
     {
-
         foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
-            if (!isset($payload[$key])) {
+            if (! isset($payload[$key])) {
                 throw new \InvalidArgumentException("{$key} cannot be empty");
             }
         }
@@ -156,7 +153,7 @@ class PackageResource
                 throw new PackageNotFound("Package {$packageId} not found");
             }
             throw new \RuntimeException($response->json());
-        })->json("data");
+        })->json('data');
 
         return PackageFactory::new(attributes: $data);
     }

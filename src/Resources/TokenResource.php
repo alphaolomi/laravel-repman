@@ -36,20 +36,16 @@ class TokenResource
                 throw new \RuntimeException('You are not authorized to perform this action');
             }
             throw new \RuntimeException($response->json());
-        })->json("data");
+        })->json('data');
 
         return TokenFactory::collection(tokens: $data);
     }
-
-
-
 
     /**
      * Generate a new token.
      */
     public function generate(): Token
     {
-
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
             url: "/organizations/{$this->organisationAlias}/tokens",
@@ -66,7 +62,8 @@ class TokenResource
 
     /**
      * Get a token.
-     * @param string $token
+     *
+     * @param  string  $token
      * @return Token
      */
     public function regenerate(string $token): Token
@@ -82,7 +79,6 @@ class TokenResource
                 throw new \RuntimeException('Token not found');
             }
             throw new \RuntimeException($response->json());
-
         })->json();
 
         return TokenFactory::new($data);
@@ -91,9 +87,8 @@ class TokenResource
     /**
      * Delete a token.
      *
-     * @param string $token
+     * @param  string  $token
      * @return bool
-     *
      */
     public function delete(string $token): bool
     {

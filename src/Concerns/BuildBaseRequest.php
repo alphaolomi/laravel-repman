@@ -23,6 +23,4 @@ trait BuildBaseRequest
     {
         return Http::baseUrl(url: $this->baseUrl);
     }
-
-
 }

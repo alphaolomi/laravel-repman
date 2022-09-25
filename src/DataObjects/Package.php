@@ -1,4 +1,5 @@
 <?php
+
 // "id": "string",
 //       "type": "string",
 //       "url": "string",
@@ -17,7 +18,6 @@
 //       ],
 //       "keepLastReleases": 0,
 //       "enabledSecurityScan": true
-
 
 declare(strict_types=1);
 

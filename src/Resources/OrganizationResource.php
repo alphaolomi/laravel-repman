@@ -6,7 +6,6 @@ use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
 use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
 use AlphaOlomi\Repman\DataObjects\Organisation;
 use AlphaOlomi\Repman\RepmanService;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 
@@ -24,7 +23,7 @@ class OrganizationResource
     /**
      * List all organizations.
      *
-     * @param int $page
+     * @param  int  $page
      * @return Collection
      */
     public function list(int $page = 1): Collection
@@ -34,7 +33,7 @@ class OrganizationResource
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
             url: "/organization?page={$page}",
-        )->json("data");
+        )->json('data');
 
         return OrganisationFactory::collection(organisations: $data);
     }
@@ -42,7 +41,7 @@ class OrganizationResource
     /**
      * Create a new organization.
      *
-     * @param string $name
+     * @param  string  $name
      * @return Organisation
      */
     public function create(string $name): Organisation
@@ -51,7 +50,7 @@ class OrganizationResource
             throw new \InvalidArgumentException('Name cannot be empty');
         }
 
-        $data =  $this->service->post(
+        $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
             url: '/organizations',
             payload: ['name' => $name],

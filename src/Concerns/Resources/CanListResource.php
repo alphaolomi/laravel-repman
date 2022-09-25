@@ -10,4 +10,3 @@ interface CanListResource
 {
     public function list(int $page = 1): Collection;
 }
-

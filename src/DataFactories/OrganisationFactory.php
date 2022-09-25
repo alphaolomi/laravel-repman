@@ -3,7 +3,6 @@
 namespace AlphaOlomi\Repman\DataFactories;
 
 use AlphaOlomi\Repman\DataObjects\Organisation;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class OrganisationFactory
