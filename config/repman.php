@@ -13,7 +13,7 @@ return [
 
     /**
      * API Token
-     * While logged in obtain your token from https://app.repman.io/user/token
+     * While logged in, obtain your token from https://app.repman.io/user/token
      */
     'token' => env('REPMAN_TOKEN'),
 ];

@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     $this->service = new RepmanService(baseUrl: 'https://app.repman.io/api', apiToken: '123');
-    $this->tokenResource = new TokenResource(service: $this->service, organisationAlias: 'mumbo');
+    $this->tokenResource = new TokenResource(service: $this->service, organizationAlias: 'mumbo');
 });
 
-it('can list organisation\'s tokens with negative page index', function () {
+it('can list organization\'s tokens with negative page index', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('list-tokens.json'), 200),
     ]);
@@ -22,7 +22,7 @@ it('can list organisation\'s tokens with negative page index', function () {
     expect($tokenCollection->first())->toBeInstanceOf(Token::class);
 });
 
-it('can list organisation\'s tokens', function () {
+it('can list organization\'s tokens', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('list-tokens.json'), 200),
     ]);
@@ -32,7 +32,7 @@ it('can list organisation\'s tokens', function () {
     expect($tokenCollection)->toBeCollection();
 });
 
-it('can generate token for an organisation', function () {
+it('can generate token for an organization', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('generate-token.json'), 201),
     ]);
@@ -42,7 +42,7 @@ it('can generate token for an organisation', function () {
     expect($package)->toBeInstanceOf(Token::class);
 });
 
-it('can regenerate token for an organisation ', function () {
+it('can regenerate token for an organization ', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('regenerate-token.json'), 200),
     ]);
@@ -62,7 +62,7 @@ it('will throw Exception if Token action is forbidden', function () {
         ->generate();
 })->throws(RuntimeException::class);
 
-it('can delete token from organisation ', function () {
+it('can delete token from organization ', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response([], 200),
     ]);

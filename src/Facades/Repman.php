@@ -9,11 +9,11 @@ use AlphaOlomi\Repman\Resources\TokenResource;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static OrganizationResource organisations()
- * @method static PackageResource packages(string $organisationAlias)
- * @method static TokenResource tokens(string $organisationAlias)
- *  @method static setBaseUrl(string $url)
- *  @method static setApiToken(string $token)
+ * @method static OrganizationResource organizations()
+ * @method static PackageResource packages(string $organizationAlias)
+ * @method static TokenResource tokens(string $organizationAlias)
+ * @method static setBaseUrl(string $url)
+ * @method static setApiToken(string $token)
  *
  * @see \AlphaOlomi\Repman\RepmanService
  */

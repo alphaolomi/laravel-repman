@@ -2,21 +2,21 @@
 
 namespace AlphaOlomi\Repman\DataFactories;
 
-use AlphaOlomi\Repman\DataObjects\Organisation;
+use AlphaOlomi\Repman\DataObjects\Organization;
 use Illuminate\Support\Collection;
 
-final class OrganisationFactory
+final class OrganizationFactory
 {
-    public static function new(array $attributes): Organisation
+    public static function new(array $attributes): Organization
     {
         return (new static)->make(
             attributes: $attributes,
         );
     }
 
-    public function make(array $attributes): Organisation
+    public function make(array $attributes): Organization
     {
-        return new Organisation(
+        return new Organization(
             id: strval(data_get($attributes, 'id')),
             name: strval(data_get($attributes, 'name')),
             alias: strval(data_get($attributes, 'alias')),
@@ -24,10 +24,10 @@ final class OrganisationFactory
         );
     }
 
-    public static function collection(array $organisations): Collection
+    public static function collection(array $organizations): Collection
     {
         return (new Collection(
-            items: $organisations,
-        ))->map(fn ($organisation): Organisation => static::new(attributes: $organisation));
+            items: $organizations,
+        ))->map(fn ($organization): Organization => static::new(attributes: $organization));
     }
 }

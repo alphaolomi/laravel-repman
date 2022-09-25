@@ -1,6 +1,7 @@
 <?php
 
-use AlphaOlomi\Repman\DataObjects\Organisation;
+use AlphaOlomi\Repman\DataObjects\Organization;
+use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use Illuminate\Support\Facades\Http;
@@ -11,7 +12,7 @@ beforeEach(function () {
     $this->organizationResource = (new OrganizationResource(service: $this->service));
 });
 
-it('can list organisations', function () {
+it('can list organizations', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/organization*' => Http::response(getFixture('list-orgs.json'), 200),
     ]);
@@ -30,9 +31,9 @@ it('can create org', function () {
         'app.repman.io/api/organization*' => Http::response(getFixture('create-org.json'), 201),
     ]);
 
-    $organisation = $this->organizationResource
+    $organization = $this->organizationResource
         ->create('mumbo');
 
-    expect($organisation)->toBeInstanceOf(Organisation::class)
-        ->and($organisation->name)->toBe('mumbo');
+    expect($organization)->toBeInstanceOf(Organization::class)
+        ->and($organization->name)->toBe('mumbo');
 });

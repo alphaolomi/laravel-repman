@@ -10,7 +10,7 @@ namespace AlphaOlomi\Repman\DataObjects;
  * @property string $alias
  * @property bool $hasAnonymousAccess
  */
-class Organisation
+class Organization
 {
     public function __construct(
         public readonly string $id,

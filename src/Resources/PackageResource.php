@@ -18,7 +18,7 @@ class PackageResource
 {
     public function __construct(
         private readonly RepmanService $service,
-        private readonly string $organisationAlias,
+        private readonly string $organizationAlias,
     ) {
     }
 
@@ -34,7 +34,7 @@ class PackageResource
 
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationAlias}/package?page={$page}",
+            url: "/organizations/{$this->organizationAlias}/package?page={$page}",
         )->onError(function () {
 //
         })->json('data');
@@ -61,10 +61,10 @@ class PackageResource
 
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package",
+            url: "/organization/{$this->organizationAlias}/package",
             payload: $payload,
         )->onError(function (Response $response) {
-            throw new \RuntimeException($response->json());
+            throw new $response->toException();
         })->json();
 
         return PackageFactory::new(attributes: $data);
@@ -80,14 +80,14 @@ class PackageResource
     {
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
             } elseif ($response->status() === 403) {
                 throw new \RuntimeException("You don't have permission to access this package");
             } else {
-                throw new \RuntimeException($response->json());
+                throw new $response->toException();
             }
         })->json();
 
@@ -104,12 +104,12 @@ class PackageResource
     {
         $this->service->delete(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
             }
-            throw new \RuntimeException($response->json());
+            throw new $response->toException();
         });
 
         return true;
@@ -122,12 +122,12 @@ class PackageResource
     {
         $this->service->put(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
             }
-            throw new \RuntimeException($response->json());
+            throw new $response->toException();
         });
 
         return true;
@@ -144,15 +144,15 @@ class PackageResource
             }
         }
 
-        $data = $this->service->put(
+        $data = $this->service->patch(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organizations/{$this->organizationAlias}/package/{$packageId}",
             payload: $payload,
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound("Package {$packageId} not found");
             }
-            throw new \RuntimeException($response->json());
+            throw new $response->toException();
         })->json('data');
 
         return PackageFactory::new(attributes: $data);
