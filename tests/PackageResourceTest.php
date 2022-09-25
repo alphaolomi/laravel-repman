@@ -1,6 +1,7 @@
 <?php
 
 use AlphaOlomi\Repman\DataObjects\Package;
+use AlphaOlomi\Repman\Exceptions\PackageNotFound;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Resources\PackageResource;
 use Illuminate\Support\Facades\Http;
@@ -58,6 +59,21 @@ it('will throw Exception when adding package with missing key', function () {
         ]);
 })->throws(InvalidArgumentException::class, 'Missing required keys: repository cannot be empty');
 
+
+it('will throw Exception when adding package with server error', function () {
+    Http::preventStrayRequests()->fake([
+        'app.repman.io/api/*' => Http::response(getFixture('add-package.json'), 503),
+    ]);
+
+    $this->packageResource
+        ->add([
+            'repository' => 'https://github.com/alphaolomi/laracon',
+            'type' => 'github',
+            'keepLastReleases' => 0,
+        ]);
+
+})->throws(\Illuminate\Http\Client\RequestException::class);
+
 it('will throw Exception when adding package with bad type value', function () {
     $this->packageResource
         ->add([
@@ -83,6 +99,23 @@ it('can find package from organization', function () {
     // it utilize multiple find requests
     Http::assertSentCount(1);
 });
+
+
+// it('will throw if find package not found from organization', function () {
+//     Http::preventStrayRequests()->fake([
+//         'app.repman.io/api/*' => Http::response(getFixture('find-package.json'), 503,
+//     ]);
+
+//     $package = $this->packageResource
+//         ->find('9e680010-c8ad-4d01-a04b-00a981c25548');
+
+//     expect($package)->toBeInstanceOf(Package::class);
+
+
+
+
+//     // Http::assertSentCount(1);
+// })->throws(\Illuminate\Http\Client\RequestException::class);
 
 it('will throw PNF Exception if package is not found', function () {
     Http::preventStrayRequests()->fake([
@@ -111,3 +144,22 @@ it('can remove package from organization', function () {
             ->remove('9e680010-c8ad-4d01-a04b-00a981c25548')
     )->toBeTrue();
 });
+
+
+it('will throw if remove package not found from organization', function () {
+    Http::preventStrayRequests()->fake([
+        'app.repman.io/api/*' => Http::response([], 404),
+    ]);
+    $this->packageResource
+            ->remove('9e680010-c8ad-4d01-a04b-00a981c25548');
+})->throws(PackageNotFound::class);
+
+
+
+it('will throw if package removal  failed on server  from organization', function () {
+    Http::preventStrayRequests()->fake([
+        'app.repman.io/api/*' => Http::response([], 500),
+    ]);
+    $this->packageResource
+            ->remove('9e680010-c8ad-4d01-a04b-00a981c25548');
+})->throws(\Illuminate\Http\Client\RequestException::class);

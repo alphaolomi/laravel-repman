@@ -1,23 +1,5 @@
 <?php
 
-// "id": "string",
-//       "type": "string",
-//       "url": "string",
-//       "name": "string",
-//       "latestReleasedVersion": "string",
-//       "latestReleaseDate": "2022-09-24T18:09:23.371Z",
-//       "description": "string",
-//       "lastSyncAt": "2022-09-24T18:09:23.371Z",
-//       "lastSyncError": "string",
-//       "webhookCreatedAt": "2022-09-24T18:09:23.371Z",
-//       "isSynchronizedSuccessfully": true,
-//       "scanResultStatus": "string",
-//       "scanResultDate": "2022-09-24T18:09:23.371Z",
-//       "lastScanResultContent": [
-//         "string"
-//       ],
-//       "keepLastReleases": 0,
-//       "enabledSecurityScan": true
 
 declare(strict_types=1);
 
@@ -65,7 +47,7 @@ class Package
             'scanResultDate' => $this->scanResultDate->toString(),
             'lastScanResultContent' => $this->lastScanResultContent,
             'keepLastReleases' => $this->keepLastReleases,
-            'enabledSecurityScan' => $this->enableSecurityScan,
+            'enableSecurityScan' => $this->enableSecurityScan,
         ];
     }
 }

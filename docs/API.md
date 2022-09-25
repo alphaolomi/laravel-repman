@@ -42,7 +42,7 @@
     //      ],
     //  ],
     //  "keepLastReleases" => 0,
-    //  "enabledSecurityScan" => true,
+    //  "enableSecurityScan" => true,
     // ]
     ```
 

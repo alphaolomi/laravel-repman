@@ -9,6 +9,7 @@ use AlphaOlomi\Repman\DataObjects\Token;
 use AlphaOlomi\Repman\RepmanService;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 class TokenResource
 {
@@ -73,10 +74,10 @@ class TokenResource
             url: "/organization/{$this->organizationAlias}/tokens/{$token}",
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
-                throw new \RuntimeException('You are not authorized to perform this action');
+                throw new RuntimeException('You are not authorized to perform this action');
             }
             if ($response->status() === 404) {
-                throw new \RuntimeException('Token not found');
+                throw new RuntimeException('Token not found');
             }
             throw new \Illuminate\Http\Client\RequestException($response);
         })->json();

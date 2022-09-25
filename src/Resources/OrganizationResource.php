@@ -59,8 +59,9 @@ class OrganizationResource implements CanListResource
             payload: ['name' => $name],
         )
             ->onError(function (Response $response) {
-                if ($response->status() === 400 && str_contains($response->json('errors.message'), 'already exists')) {
-                    throw new RuntimeException('Organization already exists');
+                if ($response->status() === 400) {
+                    // && str_contains($response->json('errors.message'), 'already exists')
+                    throw new \RuntimeException('Organization already exists');
                 }
                 throw new RequestException($response);
             })
