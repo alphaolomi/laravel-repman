@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AlphaOlomi\Repman\DataFactories;
 
 use AlphaOlomi\Repman\DataObjects\Token;
