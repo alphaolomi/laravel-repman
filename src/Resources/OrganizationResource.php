@@ -42,8 +42,9 @@ class OrganizationResource implements CanListResource
     /**
      * Create a new organization.
      *
-     * @param string $name
+     * @param  string  $name
      * @return Organization
+     *
      * @throws RequestException
      */
     public function create(string $name): Organization
@@ -58,7 +59,7 @@ class OrganizationResource implements CanListResource
             payload: ['name' => $name],
         )
             ->onError(function (Response $response) {
-                if ($response->status() === 400 && str_contains($response->json('errors.message'),'already exists') ) {
+                if ($response->status() === 400 && str_contains($response->json('errors.message'), 'already exists')) {
                     throw new RuntimeException('Organization already exists');
                 }
                 throw new RequestException($response);

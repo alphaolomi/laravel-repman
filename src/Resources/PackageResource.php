@@ -46,8 +46,9 @@ class PackageResource
     /**
      * Create a new package.
      *
-     * @param array $payload
+     * @param  array  $payload
      * @return Package
+     *
      * @throws RequestException
      */
     public function add(array $payload): Package
@@ -75,8 +76,9 @@ class PackageResource
     /**
      * Find a package.
      *
-     * @param string $packageId
+     * @param  string  $packageId
      * @return Package
+     *
      * @throws RequestException
      */
     public function find(string $packageId): Package
@@ -100,8 +102,9 @@ class PackageResource
     /**
      * Remove a package.
      *
-     * @param string $packageId
+     * @param  string  $packageId
      * @return bool
+     *
      * @throws RequestException
      */
     public function remove(string $packageId): bool
@@ -160,7 +163,7 @@ class PackageResource
                 throw new \RuntimeException("You don't have permission to access this package");
             }
             if ($response->status() === 400) {
-                throw new \RuntimeException("Bad request");
+                throw new \RuntimeException('Bad request');
             }
             throw new \Illuminate\Http\Client\RequestException($response);
         });
