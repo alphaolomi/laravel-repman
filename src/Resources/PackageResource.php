@@ -8,6 +8,7 @@ use AlphaOlomi\Repman\DataFactories\PackageFactory;
 use AlphaOlomi\Repman\DataObjects\Package;
 use AlphaOlomi\Repman\Exceptions\PackageNotFound;
 use AlphaOlomi\Repman\RepmanService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 
@@ -18,7 +19,7 @@ class PackageResource
 {
     public function __construct(
         private readonly RepmanService $service,
-        private readonly string $organisationAlias,
+        private readonly string $organizationAlias,
     ) {
     }
 
@@ -34,7 +35,7 @@ class PackageResource
 
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationAlias}/package?page={$page}",
+            url: "/organization/{$this->organizationAlias}/package?page={$page}",
         )->onError(function () {
 //
         })->json('data');
@@ -47,6 +48,8 @@ class PackageResource
      *
      * @param  array  $payload
      * @return Package
+     *
+     * @throws RequestException
      */
     public function add(array $payload): Package
     {
@@ -61,10 +64,10 @@ class PackageResource
 
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package",
+            url: "/organization/{$this->organizationAlias}/package",
             payload: $payload,
         )->onError(function (Response $response) {
-            throw new \RuntimeException($response->json());
+            throw new \Illuminate\Http\Client\RequestException($response);
         })->json();
 
         return PackageFactory::new(attributes: $data);
@@ -75,19 +78,21 @@ class PackageResource
      *
      * @param  string  $packageId
      * @return Package
+     *
+     * @throws RequestException
      */
     public function find(string $packageId): Package
     {
         $data = $this->service->get(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
-                throw new PackageNotFound("Package {$packageId} not found");
+                throw new PackageNotFound($packageId);
             } elseif ($response->status() === 403) {
                 throw new \RuntimeException("You don't have permission to access this package");
             } else {
-                throw new \RuntimeException($response->json());
+                throw new \Illuminate\Http\Client\RequestException($response);
             }
         })->json();
 
@@ -99,17 +104,19 @@ class PackageResource
      *
      * @param  string  $packageId
      * @return bool
+     *
+     * @throws RequestException
      */
     public function remove(string $packageId): bool
     {
         $this->service->delete(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
-                throw new PackageNotFound("Package {$packageId} not found");
+                throw new PackageNotFound($packageId);
             }
-            throw new \RuntimeException($response->json());
+            throw new \Illuminate\Http\Client\RequestException($response);
         });
 
         return true;
@@ -122,12 +129,12 @@ class PackageResource
     {
         $this->service->put(
             request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
-                throw new PackageNotFound("Package {$packageId} not found");
+                throw new PackageNotFound($packageId);
             }
-            throw new \RuntimeException($response->json());
+            throw new \Illuminate\Http\Client\RequestException($response);
         });
 
         return true;
@@ -136,7 +143,7 @@ class PackageResource
     /**
      * Update and synchronize a package.
      */
-    public function update(string $packageId, array $payload): Package
+    public function update(string $packageId, array $payload): bool
     {
         foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
             if (! isset($payload[$key])) {
@@ -144,17 +151,23 @@ class PackageResource
             }
         }
 
-        $data = $this->service->put(
+        $data = $this->service->patch(
             request: $this->service->buildRequestWithToken(),
-            url: "/organizations/{$this->organisationAlias}/package/{$packageId}",
+            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
             payload: $payload,
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
-                throw new PackageNotFound("Package {$packageId} not found");
+                throw new PackageNotFound($packageId);
             }
-            throw new \RuntimeException($response->json());
-        })->json('data');
+            if ($response->status() === 403) {
+                throw new \RuntimeException("You don't have permission to access this package");
+            }
+            if ($response->status() === 400) {
+                throw new \RuntimeException('Bad request');
+            }
+            throw new \Illuminate\Http\Client\RequestException($response);
+        });
 
-        return PackageFactory::new(attributes: $data);
+        return true;
     }
 }

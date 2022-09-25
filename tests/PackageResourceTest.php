@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     $this->service = new RepmanService(baseUrl: 'https://app.repman.io/api', apiToken: '123');
-    $this->packageResource = new PackageResource(service: $this->service, organisationAlias: 'mumbo');
+    $this->packageResource = new PackageResource(service: $this->service, organizationAlias: 'mumbo');
 });
 
-it('can list organisation\'s packages successfully with negative page index', function () {
+it('can list organization\'s packages successfully with negative page index', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('list-packages.json'), 200),
     ]);
@@ -22,7 +22,7 @@ it('can list organisation\'s packages successfully with negative page index', fu
     expect($orgCollect->first())->toBeInstanceOf(Package::class);
 });
 
-it('can list organisation\'s packages successfully', function () {
+it('can list organization\'s packages successfully', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('list-packages.json'), 200),
     ]);
@@ -34,7 +34,7 @@ it('can list organisation\'s packages successfully', function () {
     expect($orgCollect->first())->toBeInstanceOf(Package::class);
 });
 
-it('can add package to organisation successfully', function () {
+it('can add package to organization successfully', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('add-package.json'), 201),
     ]);
@@ -67,7 +67,7 @@ it('will throw Exception when adding package with bad type value', function () {
         ]);
 })->throws(InvalidArgumentException::class);
 
-it('can find package from organisation', function () {
+it('can find package from organization', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('find-package.json'), 201),
     ]);
@@ -101,7 +101,7 @@ it('will throw RT Exception if action forbidden', function () {
         ->find('9e680010-c8ad-4d01-a04b-00a981c25548');
 })->throws(RuntimeException::class);
 
-it('can remove package from organisation', function () {
+it('can remove package from organization', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response([], 200),
     ]);

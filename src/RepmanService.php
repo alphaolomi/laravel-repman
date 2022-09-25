@@ -54,7 +54,7 @@ class RepmanService
     }
 
     /**
-     *  Set the api token
+     *  Set the API token
      *
      * @param  string  $apiToken
      * @return RepmanService
@@ -74,13 +74,21 @@ class RepmanService
         );
     }
 
-    // get the base url
+    /**
+     * Get the Base URL
+     *
+     * @return string
+     */
     public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
 
-    // get the api token
+    /**
+     * Get the current API Token
+     *
+     * @return string
+     */
     public function getApiToken(): string
     {
         return $this->apiToken;
@@ -93,19 +101,19 @@ class RepmanService
         );
     }
 
-    public function packages(string $organisationAlias): PackageResource
+    public function packages(string $organizationAlias): PackageResource
     {
         return new PackageResource(
             service: $this,
-            organisationAlias: $organisationAlias,
+            organizationAlias: $organizationAlias,
         );
     }
 
-    public function tokens(string $organisationAlias): TokenResource
+    public function tokens(string $organizationAlias): TokenResource
     {
         return new TokenResource(
             service: $this,
-            organisationAlias: $organisationAlias,
+            organizationAlias: $organizationAlias,
         );
     }
 }

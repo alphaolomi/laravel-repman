@@ -3,17 +3,18 @@
 namespace AlphaOlomi\Repman\Resources;
 
 use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
-use AlphaOlomi\Repman\DataFactories\OrganisationFactory;
-use AlphaOlomi\Repman\DataObjects\Organisation;
+use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
+use AlphaOlomi\Repman\DataObjects\Organization;
 use AlphaOlomi\Repman\RepmanService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 /**
  * @property RepmanService $service
  */
-class OrganizationResource
-//    implements CanListResource
+class OrganizationResource implements CanListResource
 {
     public function __construct(
         private readonly RepmanService $service,
@@ -35,16 +36,18 @@ class OrganizationResource
             url: "/organization?page={$page}",
         )->json('data');
 
-        return OrganisationFactory::collection(organisations: $data);
+        return OrganizationFactory::collection(organizations: $data);
     }
 
     /**
      * Create a new organization.
      *
      * @param  string  $name
-     * @return Organisation
+     * @return Organization
+     *
+     * @throws RequestException
      */
-    public function create(string $name): Organisation
+    public function create(string $name): Organization
     {
         if (empty($name)) {
             throw new \InvalidArgumentException('Name cannot be empty');
@@ -52,16 +55,17 @@ class OrganizationResource
 
         $data = $this->service->post(
             request: $this->service->buildRequestWithToken(),
-            url: '/organizations',
+            url: '/organization',
             payload: ['name' => $name],
         )
             ->onError(function (Response $response) {
-                throw new \RuntimeException($response->json());
+                if ($response->status() === 400 && str_contains($response->json('errors.message'), 'already exists')) {
+                    throw new RuntimeException('Organization already exists');
+                }
+                throw new RequestException($response);
             })
             ->json();
 
-        return OrganisationFactory::new(
-            attributes: $data,
-        );
+        return OrganizationFactory::new(attributes: $data);
     }
 }
