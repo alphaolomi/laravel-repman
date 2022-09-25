@@ -18,27 +18,56 @@ You can publish the config file with:
 php artisan vendor:publish --tag="laravel-repman-config"
 ```
 
-This is the contents of the published config file:
+<!-- This is the contents of the published config file:
 
 ```php
 return [
     // 
 ];
-```
+``` -->
 
 ## Usage
 
-```php
-use AlphaOlomi\\Repman\\Facades\\Repman;
+Using the package is very simple, you just need to call the `Repman` facade and pass the required parameters.
 
-$orgsCollection =  Repman::organisations()->get();
+```php
+use AlphaOlomi\Repman\Facades\Repman;
+
+// Collection of organisations
+$orgsCollection =  Repman::organisations()->list();
+
+/** @var AlphaOlomi\Repman\DataObjects\Organisation */
+$org =  Repman::organisations()->create('org-name');
 ```
 
 ## Testing
 
+Uses Pest PHP testing framework
+
 ```bash
 composer test
 ```
+
+## APIs
+
+### Organisation
+
+- [x] List all organisations
+- [x] Create organisation
+
+### Packages
+
+- [x] List all packages
+- [x] Add package
+- [x] Update package
+- [x] Synchrnize package
+- [x] Remove package
+
+### Tokens
+- [x] List all tokens
+- [x] Generate token
+- [x] Regenerate token
+- [x] Delete token
 
 ## Changelog
 
