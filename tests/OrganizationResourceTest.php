@@ -31,12 +31,9 @@ it('can create org', function () {
     expect($organization)->toBeInstanceOf(Organization::class);
 });
 
-
 it('wont create org with empty name', function () {
-     $this->organizationResource->create('');
+    $this->organizationResource->create('');
 })->throws(\InvalidArgumentException::class, 'Name cannot be empty');
-
-
 
 it('wont create org  with existing name', function () {
     Http::preventStrayRequests()->fake([
@@ -44,17 +41,12 @@ it('wont create org  with existing name', function () {
     ]);
 
     $this->organizationResource->create('mumbo223');
-
-
 })->throws(RuntimeException::class, 'Organization already exists');
-
-
 
 it('wont create org  with other errors', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/organization*' => Http::response([], 503),
     ]);
 
-     $this->organizationResource->create('mumbo223');
+    $this->organizationResource->create('mumbo223');
 })->throws(\Illuminate\Http\Client\RequestException::class);
-

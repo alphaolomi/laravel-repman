@@ -3,7 +3,7 @@
 use AlphaOlomi\Repman\DataObjects\Package;
 use Illuminate\Support\Carbon;
 
-test("package data objet works", function () {
+test('package data objet works', function () {
     $package = new Package(
         id: 'id',
         type: 'type',
@@ -61,4 +61,3 @@ test("package data objet works", function () {
             'enableSecurityScan',
         ]);
 });
-

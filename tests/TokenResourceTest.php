@@ -3,8 +3,8 @@
 use AlphaOlomi\Repman\DataObjects\Token;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Resources\TokenResource;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use \Illuminate\Http\Client\RequestException;
 
 beforeEach(function () {
     $this->service = new RepmanService(baseUrl: 'https://app.repman.io/api', apiToken: '123');
@@ -31,7 +31,6 @@ it('can list organization\'s tokens without permission', function () {
     $this->tokenResource->list();
 })->throws(RuntimeException::class);
 
-
 it('can NOT list organization\'s tokens with server error', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response([], 503),
@@ -39,8 +38,6 @@ it('can NOT list organization\'s tokens with server error', function () {
 
     $this->tokenResource->list();
 })->throws(RequestException::class);
-
-
 
 it('can list organization\'s tokens', function () {
     Http::preventStrayRequests()->fake([
@@ -62,7 +59,6 @@ it('can generate token for an organization', function () {
     expect($package)->toBeInstanceOf(Token::class);
 });
 
-
 it('can not generate token for an organization with failed server', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('generate-token.json'), 500),
@@ -82,10 +78,6 @@ it('can regenerate token for an organization ', function () {
     expect($package)->toBeInstanceOf(Token::class);
 });
 
-
-
-
-
 it('can regenerate token for an organization with 404', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('regenerate-token.json'), 404),
@@ -93,9 +85,7 @@ it('can regenerate token for an organization with 404', function () {
 
     $this->tokenResource
         ->regenerate('9e680010-c8ad-4d01-a04b-00a981c25548');
-
 })->throws(RequestException::class);
-
 
 it('will throw Exception if Token action is forbidden', function () {
     Http::preventStrayRequests()->fake([

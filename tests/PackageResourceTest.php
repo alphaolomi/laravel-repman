@@ -59,7 +59,6 @@ it('will throw Exception when adding package with missing key', function () {
         ]);
 })->throws(InvalidArgumentException::class, 'Missing required keys: repository cannot be empty');
 
-
 it('will throw Exception when adding package with server error', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response(getFixture('add-package.json'), 503),
@@ -71,7 +70,6 @@ it('will throw Exception when adding package with server error', function () {
             'type' => 'github',
             'keepLastReleases' => 0,
         ]);
-
 })->throws(\Illuminate\Http\Client\RequestException::class);
 
 it('will throw Exception when adding package with bad type value', function () {
@@ -100,7 +98,6 @@ it('can find package from organization', function () {
     Http::assertSentCount(1);
 });
 
-
 // it('will throw if find package not found from organization', function () {
 //     Http::preventStrayRequests()->fake([
 //         'app.repman.io/api/*' => Http::response(getFixture('find-package.json'), 503,
@@ -110,9 +107,6 @@ it('can find package from organization', function () {
 //         ->find('9e680010-c8ad-4d01-a04b-00a981c25548');
 
 //     expect($package)->toBeInstanceOf(Package::class);
-
-
-
 
 //     // Http::assertSentCount(1);
 // })->throws(\Illuminate\Http\Client\RequestException::class);
@@ -145,7 +139,6 @@ it('can remove package from organization', function () {
     )->toBeTrue();
 });
 
-
 it('will throw if remove package not found from organization', function () {
     Http::preventStrayRequests()->fake([
         'app.repman.io/api/*' => Http::response([], 404),
@@ -153,8 +146,6 @@ it('will throw if remove package not found from organization', function () {
     $this->packageResource
             ->remove('9e680010-c8ad-4d01-a04b-00a981c25548');
 })->throws(PackageNotFound::class);
-
-
 
 it('will throw if package removal  failed on server  from organization', function () {
     Http::preventStrayRequests()->fake([

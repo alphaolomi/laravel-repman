@@ -9,7 +9,6 @@ use AlphaOlomi\Repman\RepmanService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
-use RuntimeException;
 
 /**
  * @property RepmanService $service
