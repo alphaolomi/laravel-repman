@@ -48,7 +48,7 @@ Uses Pest PHP testing framework
 composer test
 ```
 
-## Services available
+## APIs
 
 ### Organisation
 
