@@ -22,14 +22,14 @@ class DeleteRequest extends BaseRequest
     /**
      * Request query parameters
      */
-    protected array $queryParams;
+    protected ?array $queryParams;
 
     /**
      * Create a new request instance
      *
-     * @param  ?string  $queryParams
+     * @param  ?array  $queryParams
      */
-    public function __construct(string $path, ?string $queryParams = null)
+    public function __construct(string $path, ?array $queryParams = null)
     {
         $this->path = $path;
         $this->queryParams = $queryParams;
@@ -41,5 +41,13 @@ class DeleteRequest extends BaseRequest
     public function resolveEndpoint(): string
     {
         return $this->path;
+    }
+
+    /**
+     * Resolve the query parameters
+     */
+    public function resolveQueryParams(): array
+    {
+        return $this->queryParams ?? [];
     }
 }

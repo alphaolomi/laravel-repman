@@ -10,7 +10,9 @@ use AlphaOlomi\Repman\Exceptions\PackageNotFound;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Requests\DeleteRequest;
 use AlphaOlomi\Repman\Requests\GetRequest;
+use AlphaOlomi\Repman\Requests\PatchRequest;
 use AlphaOlomi\Repman\Requests\PostRequest;
+use AlphaOlomi\Repman\Requests\PutRequest;
 use Generator;
 use Illuminate\Support\Collection;
 use Saloon\Contracts\Connector;
@@ -89,11 +91,11 @@ class PackageResource
     public function add(array $payload): Package
     {
         foreach (['repository', 'type', 'keepLastReleases'] as $key) {
-            if (! isset($payload[$key])) {
+            if (!isset($payload[$key])) {
                 throw new \InvalidArgumentException("Missing required keys: {$key} cannot be empty");
             }
         }
-        if (! in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
+        if (!in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
             throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
@@ -160,13 +162,11 @@ class PackageResource
     public function sync(string $packageId): bool
     {
         $this->connector->send(
-            new PostRequest(
-                path: "/organization/{$this->organizationAlias}/package/{$packageId}/sync",
-            )
+            new PutRequest(path: "/organization/{$this->organizationAlias}/package/{$packageId}")
         )->onError(function (Response $response) use ($packageId) {
-            if ($response->status() === 404) {
-                throw new PackageNotFound($packageId);
-            }
+            // if ($response->status() === 404) {
+            //     throw new PackageNotFound($packageId);
+            // }
             throw new RequestException($response);
         });
 
@@ -178,31 +178,23 @@ class PackageResource
      */
     public function update(string $packageId, array $payload): bool
     {
-        foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
-            if (! isset($payload[$key])) {
-                throw new \InvalidArgumentException("{$key} cannot be empty");
-            }
-        }
-
-        $data = (array) $this->connector->send(
-            new PostRequest(
+        $this->connector->send(
+            new PatchRequest(
                 path: "/organization/{$this->organizationAlias}/package/{$packageId}",
-                data: $payload,
+                data: $payload
             )
         )->onError(function (Response $response) use ($packageId) {
-            if ($response->status() === 404) {
-                throw new PackageNotFound($packageId);
-            }
-            if ($response->status() === 403) {
-                throw new \RuntimeException("You don't have permission to access this package");
-            }
-            if ($response->status() === 400) {
-                throw new \RuntimeException('Bad request');
-            }
+            // if ($response->status() === 404) {
+            //     throw new PackageNotFound($packageId);
+            // }
+            // if ($response->status() === 403) {
+            //     throw new \RuntimeException("You don't have permission to access this package");
+            // }
+            // if ($response->status() === 400) {
+            //     throw new \RuntimeException('Bad request');
+            // }
             throw new RequestException($response);
         })->json();
-
-        return PackageFactory::new(attributes: $data);
 
         return true;
     }

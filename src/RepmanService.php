@@ -13,8 +13,8 @@ use Saloon\Http\Connector;
 class RepmanService extends Connector
 {
     public function __construct(
-        private readonly ?string $baseUrl,
         private readonly string $apiToken,
+        private readonly string $baseUrl = 'https://app.repman.io/api',
     ) {
     }
 
