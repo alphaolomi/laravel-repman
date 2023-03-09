@@ -11,31 +11,23 @@ class DeleteRequest extends BaseRequest
 {
     /**
      * HTTP Method
-     *
-     * @var Method
      */
     protected Method $method = Method::DELETE;
 
     /**
      * Request path
-     *
-     * @var string
      */
     protected string $path;
 
     /**
      * Request query parameters
-     *
-     * @var array
      */
     protected array $queryParams;
-
 
     /**
      * Create a new request instance
      *
-     * @param string $path
-     * @param ?string $queryParams
+     * @param  ?string  $queryParams
      */
     public function __construct(string $path, ?string $queryParams = null)
     {
@@ -45,8 +37,6 @@ class DeleteRequest extends BaseRequest
 
     /**
      * Resolve the endpoint
-     *
-     * @return string
      */
     public function resolveEndpoint(): string
     {

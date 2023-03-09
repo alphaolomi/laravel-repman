@@ -7,14 +7,13 @@ use AlphaOlomi\Repman\DataObjects\Organization;
 use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Requests\GetRequest;
 use AlphaOlomi\Repman\Requests\PostRequest;
-use Saloon\Contracts\Response;
 use Illuminate\Support\Collection;
 use Saloon\Contracts\Connector;
+use Saloon\Contracts\Response;
 use Saloon\Exceptions\Request\RequestException;
 
 /**
  * @property RepmanService $service
- *
  */
 class OrganizationResource extends Resource
 {
@@ -26,7 +25,6 @@ class OrganizationResource extends Resource
     /**
      * List all organizations.
      *
-     * @param  int  $page
      * @return Collection
      */
     public function list(int $page = 1)
@@ -34,7 +32,7 @@ class OrganizationResource extends Resource
         $page = max($page, 1);
 
         $data = (array) $this->connector->send(
-            new GetRequest('/organization', ["page" => $page])
+            new GetRequest('/organization', ['page' => $page])
         )->onError(function (Response $response) {
             if ($response->status() === 401) {
                 throw new \RuntimeException('Authentication required, key is invalid');
@@ -48,8 +46,6 @@ class OrganizationResource extends Resource
     /**
      * Create a new organization.
      *
-     * @param  string  $name
-     * @return Organization
      *
      * @throws RequestException
      */

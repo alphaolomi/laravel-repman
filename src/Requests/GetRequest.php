@@ -11,32 +11,24 @@ class GetRequest extends BaseRequest
 {
     /**
      * HTTP Method
-     *
-     * @var Method
      */
     protected Method $method = Method::GET;
 
     /**
      * Request path
-     *
-     * @var string
      */
     protected string $path;
 
     /**
      * Request query parameters
-     *
-     * @var array
      */
     protected array $queryParams;
-
 
     /**
      * Create a new request instance
      *
-     * @param Method $method
-     * @param string $path
-     * @param ?string $data
+     * @param  Method  $method
+     * @param  ?string  $data
      */
     public function __construct(string $path, ?array $queryParams = null)
     {
@@ -46,8 +38,6 @@ class GetRequest extends BaseRequest
 
     /**
      * Resolve the endpoint
-     *
-     * @return string
      */
     public function resolveEndpoint(): string
     {
@@ -56,8 +46,6 @@ class GetRequest extends BaseRequest
 
     /**
      * Resolve the query parameters
-     *
-     * @return array
      */
     public function resolveQueryParams(): array
     {

@@ -6,7 +6,6 @@ namespace AlphaOlomi\Repman\Resources;
 
 use AlphaOlomi\Repman\DataFactories\TokenFactory;
 use AlphaOlomi\Repman\DataObjects\Token;
-use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Requests\DeleteRequest;
 use AlphaOlomi\Repman\Requests\GetRequest;
 use AlphaOlomi\Repman\Requests\PostRequest;
@@ -27,9 +26,6 @@ class TokenResource
 
     /**
      * List all tokens.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
@@ -72,13 +68,10 @@ class TokenResource
 
     /**
      * Get a token.
-     *
-     * @param  string  $token
-     * @return Token
      */
     public function regenerate(string $token): Token
     {
-        $data = (array)  $this->connector->send(
+        $data = (array) $this->connector->send(
             new PutRequest(path: "/organization/{$this->organizationAlias}/token/{$token}")
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
@@ -87,15 +80,11 @@ class TokenResource
             throw new RequestException($response);
         })->json();
 
-
         return TokenFactory::new($data);
     }
 
     /**
      * Delete a token.
-     *
-     * @param  string  $token
-     * @return bool
      */
     public function delete(string $token): bool
     {

@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace AlphaOlomi\Repman;
 
-use AlphaOlomi\Repman\Concerns\BuildBaseRequest;
-use Saloon\Http\Connector;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use AlphaOlomi\Repman\Resources\PackageResource;
 use AlphaOlomi\Repman\Resources\TokenResource;
 use AlphaOlomi\Repman\Responses\ApiResponse;
+use Saloon\Http\Connector;
 
 class RepmanService extends Connector
 {
-
     public function __construct(
         private readonly ?string $baseUrl,
         private readonly string $apiToken,
     ) {
     }
-
-
 
     /**
      * Define the custom response
@@ -31,8 +27,6 @@ class RepmanService extends Connector
 
     /**
      * Resolve the base URL of the service.
-     *
-     * @return string
      */
     public function resolveBaseUrl(): string
     {
@@ -49,15 +43,12 @@ class RepmanService extends Connector
         return [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            'X-API-TOKEN' => "{$this->apiToken}"
+            'X-API-TOKEN' => "{$this->apiToken}",
         ];
     }
 
     /**
      *  Set the base url.
-     *
-     * @param  string  $baseUrl
-     * @return RepmanService
      */
     public function setBaseUrl(string $baseUrl): self
     {
@@ -73,9 +64,6 @@ class RepmanService extends Connector
 
     /**
      *  Set the API token
-     *
-     * @param  string  $apiToken
-     * @return RepmanService
      */
     public function setApiToken(string $apiToken): self
     {
@@ -91,8 +79,6 @@ class RepmanService extends Connector
 
     /**
      * Get the Base URL
-     *
-     * @return string
      */
     public function getBaseUrl(): string
     {
@@ -101,8 +87,6 @@ class RepmanService extends Connector
 
     /**
      * Get the current API Token
-     *
-     * @return string
      */
     public function getApiToken(): string
     {

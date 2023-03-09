@@ -12,10 +12,10 @@ use AlphaOlomi\Repman\Requests\DeleteRequest;
 use AlphaOlomi\Repman\Requests\GetRequest;
 use AlphaOlomi\Repman\Requests\PostRequest;
 use Generator;
-use Saloon\Contracts\Response;
 use Illuminate\Support\Collection;
 use Saloon\Contracts\Connector;
 use Saloon\Contracts\Request;
+use Saloon\Contracts\Response;
 use Saloon\Exceptions\Request\RequestException;
 
 /**
@@ -31,9 +31,6 @@ class PackageResource
 
     /**
      * List all packages.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
@@ -52,9 +49,8 @@ class PackageResource
     /**
      * Iterate over a paginated request
      *
-     * @param \Saloon\Contracts\Request $request
-     * @param bool $asResponse
-     * @return \Generator
+     * @param  \Saloon\Contracts\Request  $request
+     *
      * @throws \ReflectionException
      * @throws \Saloon\Exceptions\InvalidResponseClassException
      * @throws \Saloon\Exceptions\PendingRequestException
@@ -72,7 +68,7 @@ class PackageResource
             // ->onError(fn (RequestException $e) => $e->getCode() === 429, fn () => sleep(1));
             // on rate limiting error, wait for 1 second and try again
 
-            $data = (array)$response->json('data');
+            $data = (array) $response->json('data');
 
             if ($asResponse) {
                 yield $response;
@@ -87,23 +83,21 @@ class PackageResource
     /**
      * Create a new package.
      *
-     * @param  array  $payload
-     * @return Package
      *
      * @throws RequestException
      */
     public function add(array $payload): Package
     {
         foreach (['repository', 'type', 'keepLastReleases'] as $key) {
-            if (!isset($payload[$key])) {
+            if (! isset($payload[$key])) {
                 throw new \InvalidArgumentException("Missing required keys: {$key} cannot be empty");
             }
         }
-        if (!in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
+        if (! in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
             throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
-        $data = (array)$this->connector->send(
+        $data = (array) $this->connector->send(
             new PostRequest(
                 path: "/organization/{$this->organizationAlias}/package",
                 data: $payload,
@@ -116,14 +110,12 @@ class PackageResource
     /**
      * Find a package.
      *
-     * @param  string  $packageId
-     * @return Package
      *
      * @throws RequestException
      */
     public function find(string $packageId): Package
     {
-        $data = (array)$this->connector->send(
+        $data = (array) $this->connector->send(
             new GetRequest(
                 path: "/organization/{$this->organizationAlias}/package/{$packageId}",
             )
@@ -143,8 +135,6 @@ class PackageResource
     /**
      * Remove a package.
      *
-     * @param  string  $packageId
-     * @return bool
      *
      * @throws RequestException
      */
@@ -169,7 +159,6 @@ class PackageResource
      */
     public function sync(string $packageId): bool
     {
-
         $this->connector->send(
             new PostRequest(
                 path: "/organization/{$this->organizationAlias}/package/{$packageId}/sync",
@@ -190,7 +179,7 @@ class PackageResource
     public function update(string $packageId, array $payload): bool
     {
         foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
-            if (!isset($payload[$key])) {
+            if (! isset($payload[$key])) {
                 throw new \InvalidArgumentException("{$key} cannot be empty");
             }
         }
