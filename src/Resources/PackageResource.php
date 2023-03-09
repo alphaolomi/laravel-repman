@@ -25,9 +25,6 @@ class PackageResource
 
     /**
      * List all packages.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
@@ -46,8 +43,6 @@ class PackageResource
     /**
      * Create a new package.
      *
-     * @param  array  $payload
-     * @return Package
      *
      * @throws RequestException
      */
@@ -76,8 +71,6 @@ class PackageResource
     /**
      * Find a package.
      *
-     * @param  string  $packageId
-     * @return Package
      *
      * @throws RequestException
      */
@@ -102,8 +95,6 @@ class PackageResource
     /**
      * Remove a package.
      *
-     * @param  string  $packageId
-     * @return bool
      *
      * @throws RequestException
      */

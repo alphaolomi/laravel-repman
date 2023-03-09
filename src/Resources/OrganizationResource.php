@@ -22,9 +22,6 @@ class OrganizationResource implements CanListResource
 
     /**
      * List all organizations.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
@@ -41,8 +38,6 @@ class OrganizationResource implements CanListResource
     /**
      * Create a new organization.
      *
-     * @param  string  $name
-     * @return Organization
      *
      * @throws RequestException
      */

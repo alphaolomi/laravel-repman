@@ -34,9 +34,6 @@ class RepmanService
 
     /**
      *  Set the base url.
-     *
-     * @param  string  $baseUrl
-     * @return RepmanService
      */
     public function setBaseUrl(string $baseUrl): self
     {
@@ -55,9 +52,6 @@ class RepmanService
 
     /**
      *  Set the API token
-     *
-     * @param  string  $apiToken
-     * @return RepmanService
      */
     public function setApiToken(string $apiToken): self
     {
@@ -76,8 +70,6 @@ class RepmanService
 
     /**
      * Get the Base URL
-     *
-     * @return string
      */
     public function getBaseUrl(): string
     {
@@ -86,8 +78,6 @@ class RepmanService
 
     /**
      * Get the current API Token
-     *
-     * @return string
      */
     public function getApiToken(): string
     {

@@ -21,9 +21,6 @@ class TokenResource
 
     /**
      * List all tokens.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
@@ -63,9 +60,6 @@ class TokenResource
 
     /**
      * Get a token.
-     *
-     * @param  string  $token
-     * @return Token
      */
     public function regenerate(string $token): Token
     {
@@ -87,9 +81,6 @@ class TokenResource
 
     /**
      * Delete a token.
-     *
-     * @param  string  $token
-     * @return bool
      */
     public function delete(string $token): bool
     {
