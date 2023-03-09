@@ -27,7 +27,6 @@ class DeleteRequest extends BaseRequest
     /**
      * Create a new request instance
      *
-     * @param  string  $path
      * @param  ?array  $queryParams
      */
     public function __construct(string $path, ?array $queryParams = null)

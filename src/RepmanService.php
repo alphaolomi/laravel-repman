@@ -7,7 +7,6 @@ namespace AlphaOlomi\Repman;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use AlphaOlomi\Repman\Resources\PackageResource;
 use AlphaOlomi\Repman\Resources\TokenResource;
-use AlphaOlomi\Repman\Responses\ApiResponse;
 use Saloon\Http\Connector;
 
 class RepmanService extends Connector

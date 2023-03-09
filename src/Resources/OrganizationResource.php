@@ -4,7 +4,6 @@ namespace AlphaOlomi\Repman\Resources;
 
 use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
 use AlphaOlomi\Repman\DataObjects\Organization;
-use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Requests\GetRequest;
 use AlphaOlomi\Repman\Requests\PostRequest;
 use Illuminate\Support\Collection;
@@ -25,7 +24,6 @@ class OrganizationResource extends Resource
     /**
      * List all organizations.
      *
-     * @param int $page
      * @return Collection
      */
     public function list(int $page = 1)
@@ -47,8 +45,6 @@ class OrganizationResource extends Resource
     /**
      * Create a new organization.
      *
-     * @param string $name
-     * @return Organization
      *
      * @throws RequestException
      */

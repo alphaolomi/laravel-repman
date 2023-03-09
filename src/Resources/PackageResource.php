@@ -7,7 +7,6 @@ namespace AlphaOlomi\Repman\Resources;
 use AlphaOlomi\Repman\DataFactories\PackageFactory;
 use AlphaOlomi\Repman\DataObjects\Package;
 use AlphaOlomi\Repman\Exceptions\PackageNotFound;
-use AlphaOlomi\Repman\RepmanService;
 use AlphaOlomi\Repman\Requests\DeleteRequest;
 use AlphaOlomi\Repman\Requests\GetRequest;
 use AlphaOlomi\Repman\Requests\PatchRequest;
@@ -51,8 +50,6 @@ class PackageResource
     /**
      * Iterate over a paginated request
      *
-     * @param int $page
-     * @param bool $asResponse
      * @return Generator|Package[]|Response
      *
      * @throws \ReflectionException
@@ -87,8 +84,6 @@ class PackageResource
     /**
      * Create a new package.
      *
-     * @param array $payload
-     * @return Package
      *
      * @throws RequestException
      */
@@ -115,8 +110,6 @@ class PackageResource
 
     /**
      * Find a package.
-     * @param string $packageId
-     * @return Package
      *
      * @throws RequestException
      */
@@ -141,8 +134,6 @@ class PackageResource
 
     /**
      * Remove a package.
-     * @param string $packageId
-     * @return bool
      *
      * @throws RequestException
      */
@@ -164,10 +155,6 @@ class PackageResource
 
     /**
      * Synchronize package.
-     *
-     * @param string $packageId
-     *
-     * @return bool
      */
     public function sync(string $packageId): bool
     {
@@ -185,10 +172,6 @@ class PackageResource
 
     /**
      * Update and synchronize a package.
-     *
-     * @param string $packageId
-     *
-     * @return bool
      */
     public function update(string $packageId, array $payload): bool
     {
