@@ -1,22 +1,22 @@
-# Full API
+# API Documentation
 
-## Organisation
+## Organization
 
--   List all organisations
+-   List all organizations
 
     ```php
     use AlphaOlomi\Repman\Facades\Repman;
 
-    $orgsCollection =  Repman::organisations()->list();
+    $orgsCollection =  Repman::organizations()->list();
     ``` 
 
-- Create organisation
+- Create organization
 
     ```php
     use AlphaOlomi\Repman\Facades\Repman;
 
-    /** @var AlphaOlomi\Repman\DataObjects\Organisation */
-    $org =  Repman::organisations()->create('org-name');
+    /** @var AlphaOlomi\Repman\DataObjects\Organization */
+    $org =  Repman::organizations()->create('org-name');
 
 
     echo $org->id; // 1
@@ -29,7 +29,7 @@
     //  "name" => "alphaolomi/laracon",
     //  "latestReleasedVersion" => "no stable release",
     //  "latestReleaseDate" => "Sun Apr 03 2022 13:15:56 GMT+0200",
-    //  "description" => "Larcon TZ 2022 Demo",
+    //  "description" => "LaraCon TZ 2022 Demo",
     //  "lastSyncAt" => "Fri Jun 03 2022 09:38:42 GMT+0200",
     //  "lastSyncError" => "",
     //  "webhookCreatedAt" => "Fri Jun 03 2022 09:38:39 GMT+0200",
@@ -63,9 +63,9 @@
 
     /** @var AlphaOlomi\Repman\DataObjects\Package */
     $package =  Repman::packages('my-org')->add([
-        'repository'=>'',
-        'type'=>'',
-        'keepLastReleases'=>''
+        'repository'=>'alphaolomi/laracon',
+        'type'=>'github',
+        'keepLastReleases'=>0
     ]);
     ```
 
@@ -76,9 +76,9 @@
 
     /** @var AlphaOlomi\Repman\DataObjects\Package */
     $package =  Repman::packages('my-org')->update('my-package', [
-        'repository'=>'',
-        'type'=>'',
-        'keepLastReleases'=>''
+        'url'=>'http://my-cool-package.io',
+        'type'=>'github',
+        'keepLastReleases'=>0
     ]);
 
     $package->toString();
@@ -119,7 +119,7 @@
     use AlphaOlomi\Repman\Facades\Repman;
 
     /** @var AlphaOlomi\Repman\DataObjects\Token */
-    $token =  Repman::tokens('my-org')->generate();
+    $token =  Repman::tokens('my-org')->generate('my-token');
     ```
 
 -   Regenerate token

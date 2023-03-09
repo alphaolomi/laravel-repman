@@ -1,4 +1,4 @@
-name: run-tests
+name: Tests
 
 on:
   push:
@@ -47,3 +47,5 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest
+        env:
+          REPMAN_API_KEY: ${{ secrets.REPMAN_API_KEY }}

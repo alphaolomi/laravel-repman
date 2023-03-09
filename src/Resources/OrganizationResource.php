@@ -2,38 +2,42 @@
 
 namespace AlphaOlomi\Repman\Resources;
 
-use AlphaOlomi\Repman\Concerns\Resources\CanListResource;
 use AlphaOlomi\Repman\DataFactories\OrganizationFactory;
 use AlphaOlomi\Repman\DataObjects\Organization;
-use AlphaOlomi\Repman\RepmanService;
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\Client\Response;
+use AlphaOlomi\Repman\Requests\GetRequest;
+use AlphaOlomi\Repman\Requests\PostRequest;
 use Illuminate\Support\Collection;
+use Saloon\Contracts\Connector;
+use Saloon\Contracts\Response;
+use Saloon\Exceptions\Request\RequestException;
 
 /**
- * @property RepmanService $service
+ * @property Connector $connector
  */
-class OrganizationResource implements CanListResource
+class OrganizationResource extends Resource
 {
     public function __construct(
-        private readonly RepmanService $service,
+        protected Connector $connector,
     ) {
     }
 
     /**
      * List all organizations.
      *
-     * @param  int  $page
      * @return Collection
      */
-    public function list(int $page = 1): Collection
+    public function list(int $page = 1)
     {
         $page = max($page, 1);
 
-        $data = $this->service->get(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization?page={$page}",
-        )->json('data');
+        $data = (array) $this->connector->send(
+            new GetRequest('/organization', ['page' => $page])
+        )->onError(function (Response $response) {
+            if ($response->status() === 401) {
+                throw new \RuntimeException('Authentication required, key is invalid');
+            }
+            throw new RequestException($response);
+        })->json('data');
 
         return OrganizationFactory::collection(organizations: $data);
     }
@@ -41,8 +45,6 @@ class OrganizationResource implements CanListResource
     /**
      * Create a new organization.
      *
-     * @param  string  $name
-     * @return Organization
      *
      * @throws RequestException
      */
@@ -52,19 +54,14 @@ class OrganizationResource implements CanListResource
             throw new \InvalidArgumentException('Name cannot be empty');
         }
 
-        $data = $this->service->post(
-            request: $this->service->buildRequestWithToken(),
-            url: '/organization',
-            payload: ['name' => $name],
-        )
+        $data = (array) $this->connector
+            ->send(new PostRequest('/organization', ['name' => $name]))
             ->onError(function (Response $response) {
                 if ($response->status() === 400) {
-                    // && str_contains($response->json('errors.message'), 'already exists')
                     throw new \RuntimeException('Organization already exists');
                 }
                 throw new RequestException($response);
-            })
-            ->json();
+            })->json();
 
         return OrganizationFactory::new(attributes: $data);
     }

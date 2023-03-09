@@ -7,47 +7,83 @@ namespace AlphaOlomi\Repman\Resources;
 use AlphaOlomi\Repman\DataFactories\PackageFactory;
 use AlphaOlomi\Repman\DataObjects\Package;
 use AlphaOlomi\Repman\Exceptions\PackageNotFound;
-use AlphaOlomi\Repman\RepmanService;
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\Client\Response;
+use AlphaOlomi\Repman\Requests\DeleteRequest;
+use AlphaOlomi\Repman\Requests\GetRequest;
+use AlphaOlomi\Repman\Requests\PatchRequest;
+use AlphaOlomi\Repman\Requests\PostRequest;
+use AlphaOlomi\Repman\Requests\PutRequest;
+use Generator;
 use Illuminate\Support\Collection;
+use Saloon\Contracts\Connector;
+use Saloon\Contracts\Request;
+use Saloon\Contracts\Response;
+use Saloon\Exceptions\Request\RequestException;
 
 /**
- * @property RepmanService $service
+ * @property Connector $connector
  */
 class PackageResource
 {
     public function __construct(
-        private readonly RepmanService $service,
-        private readonly string $organizationAlias,
+        protected Connector $connector,
+        protected readonly string $organizationAlias,
     ) {
     }
 
     /**
      * List all packages.
-     *
-     * @param  int  $page
-     * @return Collection
      */
     public function list(int $page = 1): Collection
     {
-        $page = ($page < 1) ? 1 : $page;
+        $page = max($page, 1);
 
-        $data = $this->service->get(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package?page={$page}",
-        )->onError(function () {
-//
-        })->json('data');
+        $data = (array) $this->connector->send(
+            new GetRequest(
+                path: "/organization/{$this->organizationAlias}/package",
+                queryParams: ['page' => $page],
+            )
+        )->json('data');
 
         return PackageFactory::collection(packages: $data);
     }
 
     /**
+     * Iterate over a paginated request
+     *
+     * @return Generator|Package[]|Response
+     *
+     * @throws \ReflectionException
+     * @throws \Saloon\Exceptions\InvalidResponseClassException
+     * @throws \Saloon\Exceptions\PendingRequestException
+     */
+    public function paginate(int $page = 1, bool $asResponse = false)
+    {
+        $page = max($page, 1);
+
+        do {
+            $response = $this->connector->send(new GetRequest(
+                path: "/organization/{$this->organizationAlias}/package",
+                queryParams: ['page' => $page],
+            ));
+            // TODO: Add retry logic when Rate Limiting is enabled
+            // ->onError(fn (RequestException $e) => $e->getCode() === 429, fn () => sleep(1));
+            // on rate limiting error, wait for 1 second and try again
+
+            $data = (array) $response->json('data');
+
+            if ($asResponse) {
+                yield $response;
+            } else {
+                yield PackageFactory::collection(packages: $data);
+            }
+
+            $page++;
+        } while ($response->json('links.next'));
+    }
+
+    /**
      * Create a new package.
      *
-     * @param  array  $payload
-     * @return Package
      *
      * @throws RequestException
      */
@@ -62,13 +98,12 @@ class PackageResource
             throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
-        $data = $this->service->post(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package",
-            payload: $payload,
-        )->onError(function (Response $response) {
-            throw new \Illuminate\Http\Client\RequestException($response);
-        })->json();
+        $data = (array) $this->connector->send(
+            new PostRequest(
+                path: "/organization/{$this->organizationAlias}/package",
+                data: $payload,
+            )
+        )->json();
 
         return PackageFactory::new(attributes: $data);
     }
@@ -76,23 +111,21 @@ class PackageResource
     /**
      * Find a package.
      *
-     * @param  string  $packageId
-     * @return Package
-     *
      * @throws RequestException
      */
     public function find(string $packageId): Package
     {
-        $data = $this->service->get(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
+        $data = (array) $this->connector->send(
+            new GetRequest(
+                path: "/organization/{$this->organizationAlias}/package/{$packageId}",
+            )
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound($packageId);
             } elseif ($response->status() === 403) {
                 throw new \RuntimeException("You don't have permission to access this package");
             } else {
-                throw new \Illuminate\Http\Client\RequestException($response);
+                throw new RequestException($response);
             }
         })->json();
 
@@ -102,21 +135,19 @@ class PackageResource
     /**
      * Remove a package.
      *
-     * @param  string  $packageId
-     * @return bool
-     *
      * @throws RequestException
      */
     public function remove(string $packageId): bool
     {
-        $this->service->delete(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
+        $this->connector->send(
+            new DeleteRequest(
+                path: "/organization/{$this->organizationAlias}/package/{$packageId}",
+            )
         )->onError(function (Response $response) use ($packageId) {
             if ($response->status() === 404) {
                 throw new PackageNotFound($packageId);
             }
-            throw new \Illuminate\Http\Client\RequestException($response);
+            throw new RequestException($response);
         });
 
         return true;
@@ -127,14 +158,13 @@ class PackageResource
      */
     public function sync(string $packageId): bool
     {
-        $this->service->put(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
-        )->onError(function (Response $response) use ($packageId) {
-            if ($response->status() === 404) {
-                throw new PackageNotFound($packageId);
-            }
-            throw new \Illuminate\Http\Client\RequestException($response);
+        $this->connector->send(
+            new PutRequest(path: "/organization/{$this->organizationAlias}/package/{$packageId}")
+        )->onError(function (Response $response) {
+            // if ($response->status() === 404) {
+            //     throw new PackageNotFound($packageId);
+            // }
+            throw new RequestException($response);
         });
 
         return true;
@@ -145,28 +175,23 @@ class PackageResource
      */
     public function update(string $packageId, array $payload): bool
     {
-        foreach (['url', 'keepLastReleases', 'enableSecurityScan'] as $key) {
-            if (! isset($payload[$key])) {
-                throw new \InvalidArgumentException("{$key} cannot be empty");
-            }
-        }
-
-        $data = $this->service->patch(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/package/{$packageId}",
-            payload: $payload,
-        )->onError(function (Response $response) use ($packageId) {
-            if ($response->status() === 404) {
-                throw new PackageNotFound($packageId);
-            }
-            if ($response->status() === 403) {
-                throw new \RuntimeException("You don't have permission to access this package");
-            }
-            if ($response->status() === 400) {
-                throw new \RuntimeException('Bad request');
-            }
-            throw new \Illuminate\Http\Client\RequestException($response);
-        });
+        $this->connector->send(
+            new PatchRequest(
+                path: "/organization/{$this->organizationAlias}/package/{$packageId}",
+                data: $payload
+            )
+        )->onError(function (Response $response) {
+            // if ($response->status() === 404) {
+            //     throw new PackageNotFound($packageId);
+            // }
+            // if ($response->status() === 403) {
+            //     throw new \RuntimeException("You don't have permission to access this package");
+            // }
+            // if ($response->status() === 400) {
+            //     throw new \RuntimeException('Bad request');
+            // }
+            throw new RequestException($response);
+        })->json();
 
         return true;
     }

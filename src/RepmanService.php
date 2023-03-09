@@ -4,39 +4,43 @@ declare(strict_types=1);
 
 namespace AlphaOlomi\Repman;
 
-use AlphaOlomi\Repman\Concerns\BuildBaseRequest;
-use AlphaOlomi\Repman\Concerns\CanSendDeleteRequest;
-use AlphaOlomi\Repman\Concerns\CanSendGetRequest;
-use AlphaOlomi\Repman\Concerns\CanSendPatchRequest;
-use AlphaOlomi\Repman\Concerns\CanSendPostRequest;
-use AlphaOlomi\Repman\Concerns\CanSendPutRequest;
 use AlphaOlomi\Repman\Resources\OrganizationResource;
 use AlphaOlomi\Repman\Resources\PackageResource;
 use AlphaOlomi\Repman\Resources\TokenResource;
+use Saloon\Http\Connector;
 
-/**
- * @property OrganizationResource $organizationResource
- */
-class RepmanService
+class RepmanService extends Connector
 {
-    use BuildBaseRequest;
-    use CanSendGetRequest;
-    use CanSendPostRequest;
-    use CanSendPutRequest;
-    use CanSendDeleteRequest;
-    use CanSendPatchRequest;
-
     public function __construct(
-        private readonly ?string $baseUrl,
         private readonly string $apiToken,
+        private readonly string $baseUrl = 'https://app.repman.io/api',
     ) {
     }
 
     /**
-     *  Set the base url.
+     * Resolve the base URL of the service.
+     */
+    public function resolveBaseUrl(): string
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * Define default headers
      *
-     * @param  string  $baseUrl
-     * @return RepmanService
+     * @return string[]
+     */
+    protected function defaultHeaders(): array
+    {
+        return [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'X-API-TOKEN' => "{$this->apiToken}",
+        ];
+    }
+
+    /**
+     *  Set the base url.
      */
     public function setBaseUrl(string $baseUrl): self
     {
@@ -47,17 +51,11 @@ class RepmanService
             throw new \InvalidArgumentException('Base url is not valid');
         }
 
-        return new self(
-            baseUrl: $baseUrl,
-            apiToken: $this->apiToken,
-        );
+        return new self(baseUrl: $baseUrl, apiToken: $this->apiToken);
     }
 
     /**
      *  Set the API token
-     *
-     * @param  string  $apiToken
-     * @return RepmanService
      */
     public function setApiToken(string $apiToken): self
     {
@@ -68,16 +66,11 @@ class RepmanService
             throw new \InvalidArgumentException('Api token must be 64 characters long');
         }
 
-        return new self(
-            baseUrl: $this->baseUrl,
-            apiToken: $apiToken,
-        );
+        return new self(baseUrl: $this->baseUrl, apiToken: $apiToken);
     }
 
     /**
      * Get the Base URL
-     *
-     * @return string
      */
     public function getBaseUrl(): string
     {
@@ -86,8 +79,6 @@ class RepmanService
 
     /**
      * Get the current API Token
-     *
-     * @return string
      */
     public function getApiToken(): string
     {
@@ -96,15 +87,13 @@ class RepmanService
 
     public function organizations(): OrganizationResource
     {
-        return new OrganizationResource(
-            service: $this,
-        );
+        return new OrganizationResource(connector: $this);
     }
 
     public function packages(string $organizationAlias): PackageResource
     {
         return new PackageResource(
-            service: $this,
+            connector: $this,
             organizationAlias: $organizationAlias,
         );
     }
@@ -112,7 +101,7 @@ class RepmanService
     public function tokens(string $organizationAlias): TokenResource
     {
         return new TokenResource(
-            service: $this,
+            connector: $this,
             organizationAlias: $organizationAlias,
         );
     }

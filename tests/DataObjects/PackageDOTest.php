@@ -3,7 +3,7 @@
 use AlphaOlomi\Repman\DataObjects\Package;
 use Illuminate\Support\Carbon;
 
-test('package data objet works', function () {
+test('it can be converted to an array', function () {
     $package = new Package(
         id: 'id',
         type: 'type',
