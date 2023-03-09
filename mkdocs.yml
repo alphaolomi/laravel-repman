@@ -9,3 +9,5 @@ nav:
     - API: API.md
 theme:
   name: 'material'
+  palette:
+    primary: yellow
