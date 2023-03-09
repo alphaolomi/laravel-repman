@@ -21,7 +21,7 @@ use Saloon\Contracts\Response;
 use Saloon\Exceptions\Request\RequestException;
 
 /**
- * @property RepmanService $service
+ * @property Connector $connector
  */
 class PackageResource
 {
@@ -51,13 +51,15 @@ class PackageResource
     /**
      * Iterate over a paginated request
      *
-     * @param  \Saloon\Contracts\Request  $request
+     * @param int $page
+     * @param bool $asResponse
+     * @return Generator|Package[]|Response
      *
      * @throws \ReflectionException
      * @throws \Saloon\Exceptions\InvalidResponseClassException
      * @throws \Saloon\Exceptions\PendingRequestException
      */
-    public function paginate(int $page = 1, bool $asResponse = false): Generator
+    public function paginate(int $page = 1, bool $asResponse = false)
     {
         $page = max($page, 1);
 
@@ -85,6 +87,8 @@ class PackageResource
     /**
      * Create a new package.
      *
+     * @param array $payload
+     * @return Package
      *
      * @throws RequestException
      */
@@ -111,7 +115,8 @@ class PackageResource
 
     /**
      * Find a package.
-     *
+     * @param string $packageId
+     * @return Package
      *
      * @throws RequestException
      */
@@ -136,7 +141,8 @@ class PackageResource
 
     /**
      * Remove a package.
-     *
+     * @param string $packageId
+     * @return bool
      *
      * @throws RequestException
      */
@@ -158,6 +164,10 @@ class PackageResource
 
     /**
      * Synchronize package.
+     *
+     * @param string $packageId
+     *
+     * @return bool
      */
     public function sync(string $packageId): bool
     {
@@ -175,6 +185,10 @@ class PackageResource
 
     /**
      * Update and synchronize a package.
+     *
+     * @param string $packageId
+     *
+     * @return bool
      */
     public function update(string $packageId, array $payload): bool
     {

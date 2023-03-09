@@ -19,13 +19,6 @@ class RepmanService extends Connector
     }
 
     /**
-     * Define the custom response
-     *
-     * @var string
-     */
-    // protected string $response = ApiResponse::class;
-
-    /**
      * Resolve the base URL of the service.
      */
     public function resolveBaseUrl(): string

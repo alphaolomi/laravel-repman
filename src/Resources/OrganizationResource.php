@@ -13,7 +13,7 @@ use Saloon\Contracts\Response;
 use Saloon\Exceptions\Request\RequestException;
 
 /**
- * @property RepmanService $service
+ * @property Connector $connector
  */
 class OrganizationResource extends Resource
 {
@@ -25,6 +25,7 @@ class OrganizationResource extends Resource
     /**
      * List all organizations.
      *
+     * @param int $page
      * @return Collection
      */
     public function list(int $page = 1)
@@ -46,6 +47,8 @@ class OrganizationResource extends Resource
     /**
      * Create a new organization.
      *
+     * @param string $name
+     * @return Organization
      *
      * @throws RequestException
      */

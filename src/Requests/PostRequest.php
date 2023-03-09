@@ -33,13 +33,13 @@ class PostRequest extends BaseRequest implements HasBody
     /**
      * Create a new request instance
      *
-     * @param  Method  $method
-     * @param  ?string  $data
+     * @param  string  $path
+     * @param  ?array  $data
      */
     public function __construct(string $path, ?array $data = null)
     {
         $this->path = $path;
-        $this->data = $data;
+        $this->data = $data ?? [];
     }
 
     /**

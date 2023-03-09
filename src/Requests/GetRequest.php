@@ -27,8 +27,8 @@ class GetRequest extends BaseRequest
     /**
      * Create a new request instance
      *
-     * @param  Method  $method
-     * @param  ?string  $data
+     * @param  string  $path
+     * @param  ?array  $queryParams
      */
     public function __construct(string $path, ?array $queryParams = null)
     {
