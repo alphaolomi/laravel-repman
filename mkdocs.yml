@@ -1,0 +1,11 @@
+site_name: 'Laravel Repman'
+site_description: 'Install and manage your private Composer repositories with ease.'
+site_author: 'Alpha Olomi'
+docs_dir: docs/
+repo_name: 'alphaolomi/laravel-repman'
+repo_url: 'https://github.com/alphaolomi/laravel-repman'
+nav:
+    - Home: index.md
+    - API: api.md
+theme:
+  name: 'material'
