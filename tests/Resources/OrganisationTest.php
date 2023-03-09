@@ -5,7 +5,6 @@ use AlphaOlomi\Repman\RepmanService;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 
-
 // beforeEach(function () {
 //     /** @var MockClient */
 //     $this->mockClient = new MockClient();
@@ -16,7 +15,6 @@ use Saloon\Http\Faking\MockResponse;
 //     $this->repman->withMockClient($this->mockClient);
 // });
 
-
 // it('can get organizations list', function () {
 //     $this->mockClient->addResponse(MockResponse::fixture('organizations.list'));
 
@@ -24,8 +22,6 @@ use Saloon\Http\Faking\MockResponse;
 
 //     expect($organizations)->toBeCollection();
 // });
-
-
 
 // it('can create an organization', function () {
 //     $this->mockClient->addResponse(MockResponse::fixture('organizations.create'));
