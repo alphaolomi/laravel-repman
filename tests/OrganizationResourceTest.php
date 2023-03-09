@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 beforeEach(function () {
     $this->apiToken = config('repman.token', '');
     $this->service = new RepmanService(baseUrl: 'https://app.repman.io/api/', apiToken: $this->apiToken);
-    $this->organizationResource = (new OrganizationResource(service: $this->service));
+    $this->organizationResource = (new OrganizationResource(connector: $this->service));
 });
 
 it('can list organizations', function () {

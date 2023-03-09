@@ -7,15 +7,21 @@ namespace AlphaOlomi\Repman\Resources;
 use AlphaOlomi\Repman\DataFactories\TokenFactory;
 use AlphaOlomi\Repman\DataObjects\Token;
 use AlphaOlomi\Repman\RepmanService;
-use Illuminate\Http\Client\Response;
+use AlphaOlomi\Repman\Requests\DeleteRequest;
+use AlphaOlomi\Repman\Requests\GetRequest;
+use AlphaOlomi\Repman\Requests\PostRequest;
+use AlphaOlomi\Repman\Requests\PutRequest;
 use Illuminate\Support\Collection;
 use RuntimeException;
+use Saloon\Contracts\Connector;
+use Saloon\Contracts\Response;
+use Saloon\Exceptions\Request\RequestException;
 
 class TokenResource
 {
     public function __construct(
-        private readonly RepmanService $service,
-        private readonly string $organizationAlias,
+        protected Connector $connector,
+        protected readonly string $organizationAlias,
     ) {
     }
 
@@ -27,16 +33,18 @@ class TokenResource
      */
     public function list(int $page = 1): Collection
     {
-        $page = ($page < 1) ? 1 : $page;
+        $page = max($page, 1);
 
-        $data = $this->service->get(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/tokens?page={$page}",
+        $data = (array) $this->connector->send(
+            new GetRequest(
+                path: "/organization/{$this->organizationAlias}/token",
+                queryParams: ['page' => $page],
+            )
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
-                throw new \RuntimeException('You are not authorized to perform this action');
+                throw new RuntimeException('You are not authorized to perform this action');
             }
-            throw new \Illuminate\Http\Client\RequestException($response);
+            throw new RequestException($response);
         })->json('data');
 
         return TokenFactory::collection(tokens: $data);
@@ -45,17 +53,18 @@ class TokenResource
     /**
      * Generate a new token.
      */
-    public function generate(): Token
+    public function generate(string $name): Token
     {
-        $data = $this->service->post(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/tokens",
-            payload: [],
+        $data = (array) $this->connector->send(
+            new PostRequest(
+                path: "/organization/{$this->organizationAlias}/token",
+                data: ['name' => $name]
+            )
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
-                throw new \RuntimeException('You are not authorized to perform this action');
+                throw new RuntimeException('You are not authorized to perform this action');
             }
-            throw new \Illuminate\Http\Client\RequestException($response);
+            throw new RequestException($response);
         })->json();
 
         return TokenFactory::new(attributes: $data);
@@ -69,18 +78,15 @@ class TokenResource
      */
     public function regenerate(string $token): Token
     {
-        $data = $this->service->put(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/tokens/{$token}",
+        $data = (array)  $this->connector->send(
+            new PutRequest(path: "/organization/{$this->organizationAlias}/token/{$token}")
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
                 throw new RuntimeException('You are not authorized to perform this action');
             }
-            if ($response->status() === 404) {
-                throw new RuntimeException('Token not found');
-            }
-            throw new \Illuminate\Http\Client\RequestException($response);
+            throw new RequestException($response);
         })->json();
+
 
         return TokenFactory::new($data);
     }
@@ -93,17 +99,13 @@ class TokenResource
      */
     public function delete(string $token): bool
     {
-        $this->service->delete(
-            request: $this->service->buildRequestWithToken(),
-            url: "/organization/{$this->organizationAlias}/tokens/{$token}",
+        $this->connector->send(
+            new DeleteRequest(path: "/organization/{$this->organizationAlias}/token/{$token}")
         )->onError(function (Response $response) {
             if ($response->status() === 403) {
-                throw new \RuntimeException('You are not authorized to perform this action');
+                throw new RuntimeException('You are not authorized to perform this action');
             }
-            if ($response->status() === 404) {
-                throw new \RuntimeException('Token not found');
-            }
-            throw new \Illuminate\Http\Client\RequestException($response);
+            throw new RequestException($response);
         })->json();
 
         return true;

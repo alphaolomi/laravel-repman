@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     $this->service = new RepmanService(baseUrl: 'https://app.repman.io/api', apiToken: '123');
-    $this->packageResource = new PackageResource(service: $this->service, organizationAlias: 'mumbo');
+    $this->packageResource = new PackageResource(connector: $this->service, organizationAlias: 'mumbo');
 });
 
 it('can list organization\'s packages successfully with negative page index', function () {
