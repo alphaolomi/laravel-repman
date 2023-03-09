@@ -23,8 +23,6 @@ it('can get Organizations list', function () {
     expect($organizations)->toBeCollection();
 });
 
-
-
 it('can create an organization', function () {
     $this->mockClient->addResponse(MockResponse::fixture('organizations.create'));
 

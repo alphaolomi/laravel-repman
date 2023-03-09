@@ -91,11 +91,11 @@ class PackageResource
     public function add(array $payload): Package
     {
         foreach (['repository', 'type', 'keepLastReleases'] as $key) {
-            if (!isset($payload[$key])) {
+            if (! isset($payload[$key])) {
                 throw new \InvalidArgumentException("Missing required keys: {$key} cannot be empty");
             }
         }
-        if (!in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
+        if (! in_array($payload['type'], ['git', 'github', 'gitlab', 'bitbucket', 'mercurial', 'subversion', 'pear'])) {
             throw new \InvalidArgumentException("{$payload['type']} is not a valid package type");
         }
 
@@ -163,7 +163,7 @@ class PackageResource
     {
         $this->connector->send(
             new PutRequest(path: "/organization/{$this->organizationAlias}/package/{$packageId}")
-        )->onError(function (Response $response) use ($packageId) {
+        )->onError(function (Response $response) {
             // if ($response->status() === 404) {
             //     throw new PackageNotFound($packageId);
             // }
@@ -183,7 +183,7 @@ class PackageResource
                 path: "/organization/{$this->organizationAlias}/package/{$packageId}",
                 data: $payload
             )
-        )->onError(function (Response $response) use ($packageId) {
+        )->onError(function (Response $response) {
             // if ($response->status() === 404) {
             //     throw new PackageNotFound($packageId);
             // }

@@ -39,13 +39,13 @@ it('can add a new package', function () {
     $this->packageId = $newPackage->id;
 });
 
-it('can find a package from a given organization', function (){
+it('can find a package from a given organization', function () {
     $this->mockClient->addResponse(MockResponse::fixture('packages.find'));
     $package = $this->repman->packages('alphaolomi')->find($this->packageId);
     expect($package)->toBeInstanceOf(Package::class);
 });
 
-it('can sync a package from a given organization', function (){
+it('can sync a package from a given organization', function () {
     $this->mockClient->addResponse(MockResponse::fixture('packages.sync'));
 
     $package = $this->repman->packages('alphaolomi')->sync($this->packageId);
@@ -53,21 +53,19 @@ it('can sync a package from a given organization', function (){
     expect($package)->toBeInstanceOf(Package::class);
 })->skip('Failing test');
 
-
-it('can update a package from a given organization', function (){
+it('can update a package from a given organization', function () {
     $this->mockClient->addResponse(MockResponse::fixture('packages.update'));
 
     $didUpdate = $this->repman->packages('alphaolomi')->update($this->packageId, [
-        "url" =>  "string",
-        "keepLastReleases" =>  0,
-        "enableSecurityScan" => true
+        'url' => 'string',
+        'keepLastReleases' => 0,
+        'enableSecurityScan' => true,
     ]);
 
     expect($didUpdate)->toBeTrue();
 })->skip('Failing test');
 
-
-it('can delete a package from a given organization', function (){
+it('can delete a package from a given organization', function () {
     $this->mockClient->addResponse(MockResponse::fixture('packages.delete'));
 
     $didDelete = $this->repman->packages('alphaolomi')->remove($this->packageId);
