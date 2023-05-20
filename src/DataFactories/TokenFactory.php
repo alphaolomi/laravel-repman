@@ -10,7 +10,7 @@ final class TokenFactory
 {
     public static function new(array $attributes): Token
     {
-        return (new static)->make(
+        return (new self)->make(
             attributes: $attributes,
         );
     }
@@ -29,6 +29,6 @@ final class TokenFactory
     {
         return (new Collection(
             items: $tokens,
-        ))->map(fn ($token): Token => static::new(attributes: $token));
+        ))->map(fn ($token): Token => self::new(attributes: $token));
     }
 }

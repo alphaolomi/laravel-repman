@@ -10,7 +10,7 @@ final class PackageFactory
 {
     public static function new(array $attributes): Package
     {
-        return (new static)->make(
+        return (new self)->make(
             attributes: $attributes,
         );
     }
@@ -41,6 +41,6 @@ final class PackageFactory
     {
         return (new Collection(
             items: $packages,
-        ))->map(fn ($package): Package => static::new(attributes: $package));
+        ))->map(fn ($package): Package => self::new(attributes: $package));
     }
 }
