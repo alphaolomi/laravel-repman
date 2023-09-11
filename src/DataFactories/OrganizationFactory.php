@@ -9,7 +9,7 @@ final class OrganizationFactory
 {
     public static function new(array $attributes): Organization
     {
-        return (new static)->make(
+        return (new self)->make(
             attributes: $attributes,
         );
     }
@@ -28,6 +28,6 @@ final class OrganizationFactory
     {
         return (new Collection(
             items: $organizations,
-        ))->map(fn ($organization): Organization => static::new(attributes: $organization));
+        ))->map(fn ($organization): Organization => self::new(attributes: $organization));
     }
 }

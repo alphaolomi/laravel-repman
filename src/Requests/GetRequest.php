@@ -29,7 +29,7 @@ class GetRequest extends BaseRequest
      *
      * @param  ?array  $queryParams
      */
-    public function __construct(string $path, ?array $queryParams = null)
+    public function __construct(string $path, array $queryParams = null)
     {
         $this->path = $path;
         $this->queryParams = $queryParams ?? [];

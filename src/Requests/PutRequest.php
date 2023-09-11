@@ -35,7 +35,7 @@ class PutRequest extends BaseRequest implements HasBody
      *
      * @param  ?array  $data
      */
-    public function __construct(string $path, ?array $data = null)
+    public function __construct(string $path, array $data = null)
     {
         $this->path = $path;
         $this->data = $data;
