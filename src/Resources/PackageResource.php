@@ -27,8 +27,7 @@ class PackageResource
     public function __construct(
         protected Connector $connector,
         protected readonly string $organizationAlias,
-    ) {
-    }
+    ) {}
 
     /**
      * List all packages.

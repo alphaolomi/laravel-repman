@@ -25,8 +25,7 @@ class Package
         public readonly array $lastScanResultContent,
         public readonly int $keepLastReleases,
         public readonly bool $enableSecurityScan,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

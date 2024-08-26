@@ -17,8 +17,7 @@ class Organization
         public readonly string $name,
         public readonly string $alias,
         public readonly bool $hasAnonymousAccess,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

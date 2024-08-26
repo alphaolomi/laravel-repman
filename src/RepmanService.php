@@ -14,8 +14,7 @@ class RepmanService extends Connector
     public function __construct(
         private readonly string $apiToken,
         private readonly string $baseUrl = 'https://app.repman.io/api',
-    ) {
-    }
+    ) {}
 
     /**
      * Resolve the base URL of the service.

@@ -21,8 +21,7 @@ class TokenResource
     public function __construct(
         protected Connector $connector,
         protected readonly string $organizationAlias,
-    ) {
-    }
+    ) {}
 
     /**
      * List all tokens.

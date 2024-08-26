@@ -11,8 +11,7 @@ class Token
         public readonly string $value,
         public readonly Carbon $createdAt,
         public readonly Carbon $lastUsedAt,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
